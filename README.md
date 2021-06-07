@@ -1,6 +1,10 @@
-# create-svelte
+# nearby-favourite-eats-ui
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte);
+Powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte);
+
+## Live demo
+
+https://faveats.pages.dev
 
 ## Creating a project
 
