@@ -100,6 +100,19 @@
 
 		currentPosition = await getPosition({ timeout: 10000 });
 	});
+
+	// TODO: for the google url, consider adjusting the scraper to give the url param directly, rather than manipulating via frontend
+	const generateGoogleUrl = venue => {
+		const { name = '', details = ' ' } = venue;
+
+		const addressParts = details.split(' ');
+		const postal = addressParts[addressParts.length - 1].trim();
+
+		const GOOGLE_MAPS_BASE = 'https://www.google.com/maps/search/?api=1&query=';
+		const query = encodeURIComponent(`${name.trim()} ${postal}`);
+
+		return `${GOOGLE_MAPS_BASE}${query}`;
+	};
 </script>
 
 <style>
@@ -128,7 +141,7 @@
 		<strong>{venues[venueId].name}</strong>
 	</p>
 	<p>
-		<a href={venues[venueId].googleMapUrl} target="_blank">{venues[venueId].details}</a>
+		<a href={generateGoogleUrl(venues[venueId])} target="_blank">{venues[venueId].details}</a>
 	</p>
 	<p>{openingHoursToday(venues[venueId].openingHours)}</p>
 
