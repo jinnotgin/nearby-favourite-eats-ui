@@ -11,8 +11,8 @@
 		venuesIdsSortedByDistance = Object.values(venues)
 			.sort(sortFuncs.nearby)
 			.map(item => item.id);
-		console.log('sorted based on geolocation');
-		console.log(venuesIdsSortedByDistance);
+		// console.log('sorted based on geolocation');
+		// console.log(venuesIdsSortedByDistance);
 	}
 
 	const burppleVenusUrl =
@@ -103,7 +103,14 @@
 </script>
 
 <style>
-	.images-container img {
+	div.images-container {
+		display: flex;
+		overflow-x: scroll;
+	}
+	div.images-container::-webkit-scrollbar {
+		display: none; /* for Chrome, Safari, and Opera */
+	}
+	div.images-container img {
 		height: 150px;
 		margin: 0 4px;
 	}
@@ -127,7 +134,7 @@
 
 	<div class="images-container">
 		{#each venues[venueId].featuredImages as imgUrl (imgUrl)}
-			<img src={imgUrl} alt="Restarurant or food" />
+			<img loading="lazy" src={imgUrl} alt="Restarurant or food" />
 		{/each}
 	</div>
 	<hr />
