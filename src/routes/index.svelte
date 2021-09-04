@@ -45,6 +45,7 @@
 		});
 	};
 	const savedPositions = {
+		nearby: { name: 'nearby_notready', coords: { longitude: 0, latitude: 0 } },
 		central: {
 			name: 'central',
 			coords: { latitude: 1.2979292236801285, longitude: 103.83747174457848 }
