@@ -147,9 +147,10 @@
 	<title>Nearby Favourite Eats</title>
 </svelte:head>
 
-<div class="flex space-x-6 items-center mx-2">
+<div class="flex space-x-6 items-center m-2">
 	<div>
-		<span class="text-2xl md:text-3xl">FavEats</span> <span class="text-xs">{venuesCount}</span>
+		<span class="text-2xl md:text-3xl font-semibold">FavEats</span>
+		<span class="text-xs font-light">{venuesCount}</span>
 	</div>
 	<div class="flex-grow text-right">
 		<select class="border-2 w-40 sm:w-1/2 md:w-96" bind:value={filter_category}>
@@ -175,7 +176,7 @@
 						loading="lazy"
 					/>
 				</div>
-				<div>
+				<div class="flex-grow flex flex-col gap-1">
 					<div class="text-xl font-medium text-black">{venues[venueId].name}</div>
 					<div class="flex flex-wrap gap-1">
 						{#each allowedCategories(venues[venueId].categories) as category (category)}
