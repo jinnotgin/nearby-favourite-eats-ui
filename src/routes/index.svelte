@@ -28,6 +28,32 @@
 		});
 	};
 
+	// dirty function for categories
+	const categoriesList = [
+		'Western',
+		'Italian',
+		'Japanese',
+		'French',
+		'Chinese',
+		'Korean',
+		'Indian',
+		'Thai',
+		'European',
+		'Mexican',
+		'Vegetarian',
+		'Halal',
+		'Pasta',
+		'Cafes & Coffee',
+		'Desserts',
+		'Local Delights',
+		'Hawker Food',
+		'Kopitiam',
+		'Late Night',
+		'Breakfast & Brunch',
+		'Bubble Tea'
+	];
+	const allowedCategories = (array) => array.filter((item) => categoriesList.includes(item));
+
 	// dirty function to get opening hours
 	const openingHoursToday = (textStr) => {
 		if (!!!textStr.includes(dayNow)) return '';
@@ -124,10 +150,10 @@
 <hr />
 <div class="flex flex-wrap gap-4 p-2">
 	{#each venuesIdsSortedByDistance as venueId (venueId)}
-		<div class="w-96 p-6 bg-white rounded-xl shadow-md flex items-center space-x-4">
+		<div class="w-96 p-3 bg-white rounded-xl shadow-md flex items-center space-x-3">
 			<div class="flex-shrink-0">
 				<img
-					class="h-24 w-24"
+					class="h-24 w-24 rounded-lg"
 					src={venues[venueId].featuredImages[0]}
 					alt={venues[venueId].name}
 					loading="lazy"
@@ -135,10 +161,15 @@
 			</div>
 			<div>
 				<div class="text-xl font-medium text-black">{venues[venueId].name}</div>
+				<div class="flex flex-wrap gap-1">
+					{#each allowedCategories(venues[venueId].categories) as category (category)}
+						<div class="flex-initial rounded-full py-1 px-2 text-xs bg-purple-100">{category}</div>
+					{/each}
+				</div>
 				<p class="text-sm text-gray-500">
 					<a href={generateGoogleUrl(venues[venueId])} target="_blank">{venues[venueId].details}</a>
 				</p>
-				<p class="text-sm text-gray-500">
+				<p class="text-sm text-gray-500 ml-auto">
 					{openingHoursToday(venues[venueId].openingHours)}
 				</p>
 			</div>
