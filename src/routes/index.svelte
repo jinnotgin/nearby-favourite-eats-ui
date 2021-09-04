@@ -1,14 +1,21 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	let currentPosition = { coords: { longitude: 0, latitude: 0 } };
+	let targetPosition = { name: 'unknown', coords: { longitude: 0, latitude: 0 } };
+	let positionType = 'unknown';
+	$: {
+		if (Object.keys(savedPositions).includes(positionType)) {
+			targetPosition = savedPositions[positionType];
+			console.log(targetPosition);
+		}
+	}
 	let lastUpdated;
 	let venues = {};
 	let filter_category = '';
 	$: venuesCount = Object.keys(venues).length;
 	let venuesShown = [];
 	$: {
-		currentPosition;
+		targetPosition;
 		venuesShown = Object.values(venues)
 			.sort(sortFuncs.nearby)
 			.filter((item) => filter_category === '' || item.categories.includes(filter_category))
@@ -24,10 +31,34 @@
 	const dayNow = dayMap[new Date().getDay()];
 
 	// geolocation
-	const getPosition = (options) => {
+	const getUserPosition = async () => {
+		savedPositions.nearby = await _getUserPosition({
+			enableHighAccuracy: true,
+			timeout: 10000
+		});
+		console.log(targetPosition);
+		if (positionType === 'unknown') positionType = 'nearby';
+	};
+	const _getUserPosition = async (options) => {
 		return new Promise(function (resolve, reject) {
 			navigator.geolocation.getCurrentPosition(resolve, reject, options);
 		});
+	};
+	const savedPositions = {
+		central: {
+			name: 'central',
+			coords: { latitude: 1.2979292236801285, longitude: 103.83747174457848 }
+		},
+		east: { name: 'east', coords: { latitude: 1.3198961460010883, longitude: 103.92639233213994 } },
+		west: { name: 'west', coords: { latitude: 1.3408331882693638, longitude: 103.72623517944368 } },
+		north: {
+			name: 'north',
+			coords: { latitude: 1.4146262348752339, longitude: 103.80107953499733 }
+		},
+		northeast: {
+			name: 'northeast',
+			coords: { latitude: 1.3899144001617987, longitude: 103.88279034518895 }
+		}
 	};
 
 	// dirty function for categories
@@ -44,14 +75,16 @@
 		'Mexican',
 		'Vegetarian',
 		'Halal',
-		'Pasta',
-		'Cafes & Coffee',
-		'Desserts',
+		'Breakfast & Brunch',
 		'Local Delights',
 		'Hawker Food',
 		'Kopitiam',
+		'Cafes & Coffee',
 		'Late Night',
-		'Breakfast & Brunch',
+		'Bread & Pastries',
+		'Pasta',
+		'Ramen',
+		'Desserts',
 		'Bubble Tea'
 	];
 	const allowedCategories = (array) => array.filter((item) => categoriesList.includes(item));
@@ -111,8 +144,8 @@
 				return R * c;
 			}
 			var origin = {
-				latitude: currentPosition.coords.latitude,
-				longitude: currentPosition.coords.longitude
+				latitude: targetPosition.coords.latitude,
+				longitude: targetPosition.coords.longitude
 			};
 			return haversineDistance(origin, a.location) - haversineDistance(origin, b.location);
 		}
@@ -126,7 +159,7 @@
 		venues = resJson.data;
 		lastUpdated = new Date(resJson.end);
 
-		currentPosition = await getPosition({ timeout: 10000 });
+		getUserPosition();
 	});
 
 	// TODO: for the google url, consider adjusting the scraper to give the url param directly, rather than manipulating via frontend
@@ -144,61 +177,72 @@
 </script>
 
 <svelte:head>
-	<title>Nearby Favourite Eats</title>
+	<title>FavEats: Nearby Favourite Eats</title>
 </svelte:head>
 
-<div class="flex space-x-6 items-center m-2">
-	<div>
-		<span class="text-2xl md:text-3xl font-semibold">FavEats</span>
-		<span class="text-xs font-light">{venuesCount}</span>
+<div class="m-2">
+	<div class="flex space-x-6 items-center">
+		<div>
+			<span class="text-2xl md:text-3xl font-semibold">FavEats</span>
+			<span class="text-xs font-light">{venuesCount}</span>
+		</div>
+		<div class="flex-grow text-right">
+			<select class="border-2 w-40 sm:w-1/2 md:w-96" bind:value={filter_category}>
+				<option value="">All</option>
+				{#each categoriesList as category}
+					<option value={category}>
+						{category}
+					</option>
+				{/each}
+			</select>
+		</div>
 	</div>
-	<div class="flex-grow text-right">
-		<select class="border-2 w-40 sm:w-1/2 md:w-96" bind:value={filter_category}>
-			<option value="">All</option>
-			{#each categoriesList as category}
-				<option value={category}>
-					{category}
+	<hr />
+	<div class="my-2">
+		Showing venues around: <select class="text-blue-500 capitalize" bind:value={positionType}>
+			{#each Object.keys(savedPositions) as region}
+				<option value={region}>
+					{region}
 				</option>
 			{/each}
 		</select>
 	</div>
-</div>
-<hr />
-<div class="flex flex-wrap p-2 space-y-4">
-	{#each venuesShown as venueId (venueId)}
-		<div class="w-full sm:w-1/2 md:w-1/3 flex">
-			<div class="flex bg-white rounded-xl shadow-md items-center p-3 mx-2 flex-1 space-x-3">
-				<div class="flex-shrink-0">
-					<img
-						class="h-24 w-24 rounded-lg"
-						src={venues[venueId].featuredImages[0]}
-						alt={venues[venueId].name}
-						loading="lazy"
-					/>
-				</div>
-				<div class="flex-grow flex flex-col gap-1">
-					<div class="text-xl font-medium text-black">{venues[venueId].name}</div>
-					<div class="flex flex-wrap gap-1">
-						{#each allowedCategories(venues[venueId].categories) as category (category)}
-							<div class="flex-initial rounded-full py-1 px-2 text-xs bg-purple-100">
-								{category}
-							</div>
-						{/each}
+	<div class="flex flex-wrap space-y-4">
+		{#each venuesShown as venueId (venueId)}
+			<div class="w-full sm:w-1/2 md:w-1/3 2xl:w-1/4 flex">
+				<div class="flex bg-white rounded-xl shadow-md items-center p-3 mx-2 flex-1 space-x-3">
+					<div class="flex-shrink-0">
+						<img
+							class="h-24 w-24 rounded-lg"
+							src={venues[venueId].featuredImages[0]}
+							alt={venues[venueId].name}
+							loading="lazy"
+						/>
 					</div>
-					<p class="text-sm text-gray-600">
-						<a href={generateGoogleUrl(venues[venueId])} target="_blank"
-							>{venues[venueId].details}</a
-						>
-					</p>
-					<p class="text-sm text-gray-400 ml-auto">
-						{openingHoursToday(venues[venueId].openingHours)}
-					</p>
+					<div class="flex-grow flex flex-col gap-1">
+						<div class="text-xl font-medium text-black">{venues[venueId].name}</div>
+						<div class="flex flex-wrap gap-1">
+							{#each allowedCategories(venues[venueId].categories) as category (category)}
+								<div class="flex-initial rounded-full py-1 px-2 text-xs bg-purple-100">
+									{category}
+								</div>
+							{/each}
+						</div>
+						<p class="text-sm text-gray-600">
+							<a href={generateGoogleUrl(venues[venueId])} target="_blank"
+								>{venues[venueId].details}</a
+							>
+						</p>
+						<p class="text-sm text-gray-400 ml-auto">
+							{openingHoursToday(venues[venueId].openingHours)}
+						</p>
+					</div>
 				</div>
 			</div>
-		</div>
-	{/each}
+		{/each}
+	</div>
+	<h3>Last Updated: {lastUpdated}</h3>
 </div>
-<h3>Last Updated: {lastUpdated}</h3>
 
 <style>
 	div.images-container {
