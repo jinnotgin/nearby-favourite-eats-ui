@@ -4,15 +4,17 @@
 	let currentPosition = { coords: { longitude: 0, latitude: 0 } };
 	let lastUpdated;
 	let venues = {};
+	let filter_category = '';
 	$: venuesCount = Object.keys(venues).length;
-	let venuesIdsSortedByDistance = [];
+	let venuesShown = [];
 	$: {
 		currentPosition;
-		venuesIdsSortedByDistance = Object.values(venues)
+		venuesShown = Object.values(venues)
 			.sort(sortFuncs.nearby)
+			.filter((item) => filter_category === '' || item.categories.includes(filter_category))
 			.map((item) => item.id);
 		// console.log('sorted based on geolocation');
-		// console.log(venuesIdsSortedByDistance);
+		// console.log(venuesShown);
 	}
 
 	const burppleVenusUrl =
@@ -147,9 +149,17 @@
 
 <h1>Nearby Fav Eats</h1>
 <h2>Venues: {venuesCount}</h2>
+<select bind:value={filter_category}>
+	<option value="">All</option>
+	{#each categoriesList as category}
+		<option value={category}>
+			{category}
+		</option>
+	{/each}
+</select>
 <hr />
 <div class="flex flex-wrap gap-4 p-2">
-	{#each venuesIdsSortedByDistance as venueId (venueId)}
+	{#each venuesShown as venueId (venueId)}
 		<div class="w-96 p-3 bg-white rounded-xl shadow-md flex items-center space-x-3">
 			<div class="flex-shrink-0">
 				<img
