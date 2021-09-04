@@ -10,7 +10,7 @@
 		currentPosition;
 		venuesIdsSortedByDistance = Object.values(venues)
 			.sort(sortFuncs.nearby)
-			.map(item => item.id);
+			.map((item) => item.id);
 		// console.log('sorted based on geolocation');
 		// console.log(venuesIdsSortedByDistance);
 	}
@@ -22,14 +22,14 @@
 	const dayNow = dayMap[new Date().getDay()];
 
 	// geolocation
-	const getPosition = options => {
-		return new Promise(function(resolve, reject) {
+	const getPosition = (options) => {
+		return new Promise(function (resolve, reject) {
 			navigator.geolocation.getCurrentPosition(resolve, reject, options);
 		});
 	};
 
 	// dirty function to get opening hours
-	const openingHoursToday = textStr => {
+	const openingHoursToday = (textStr) => {
 		if (!!!textStr.includes(dayNow)) return '';
 		return textStr.split(`${dayNow}:`)[1].split('\n')[0];
 	};
@@ -37,7 +37,7 @@
 	// https://jaredtong.com/burpple-beyond/
 	// https://github.com/tongrhj/lickilicky/blob/79d12e46aeaf5a404d72c75c68cd48399639d236/index.html#L185-L209
 	const sortFuncs = {
-		name: function(a, b) {
+		name: function (a, b) {
 			if (a.name > b.name) {
 				return 1;
 			} else if (a.name < b.name) {
@@ -46,14 +46,14 @@
 				return 0;
 			}
 		},
-		price: function(a, b) {
+		price: function (a, b) {
 			function extractPrice(formatted_price) {
 				var price = (formatted_price && formatted_price.match(/\d/g).join('')) || 0;
 				return parseInt(price, 10);
 			}
 			return extractPrice(a.formatted_price) - extractPrice(b.formatted_price);
 		},
-		nearby: function(a, b) {
+		nearby: function (a, b) {
 			function haversineDistance(p1, p2) {
 				var atan2 = Math.atan2;
 				var cos = Math.cos;
@@ -102,7 +102,7 @@
 	});
 
 	// TODO: for the google url, consider adjusting the scraper to give the url param directly, rather than manipulating via frontend
-	const generateGoogleUrl = venue => {
+	const generateGoogleUrl = (venue) => {
 		const { name = '', details = ' ' } = venue;
 
 		const addressParts = details.split(' ');
@@ -114,6 +114,38 @@
 		return `${GOOGLE_MAPS_BASE}${query}`;
 	};
 </script>
+
+<svelte:head>
+	<title>Nearby Favourite Eats</title>
+</svelte:head>
+
+<h1>Nearby Fav Eats</h1>
+<h2>Venues: {venuesCount}</h2>
+<hr />
+<div class="flex flex-wrap gap-4 p-2">
+	{#each venuesIdsSortedByDistance as venueId (venueId)}
+		<div class="w-96 p-6 bg-white rounded-xl shadow-md flex items-center space-x-4">
+			<div class="flex-shrink-0">
+				<img
+					class="h-24 w-24"
+					src={venues[venueId].featuredImages[0]}
+					alt={venues[venueId].name}
+					loading="lazy"
+				/>
+			</div>
+			<div>
+				<div class="text-xl font-medium text-black">{venues[venueId].name}</div>
+				<p class="text-sm text-gray-500">
+					<a href={generateGoogleUrl(venues[venueId])} target="_blank">{venues[venueId].details}</a>
+				</p>
+				<p class="text-sm text-gray-500">
+					{openingHoursToday(venues[venueId].openingHours)}
+				</p>
+			</div>
+		</div>
+	{/each}
+</div>
+<h3>Last Updated: {lastUpdated}</h3>
 
 <style>
 	div.images-container {
@@ -128,28 +160,3 @@
 		margin: 0 4px;
 	}
 </style>
-
-<svelte:head>
-	<title>Nearby Favourite Eats</title>
-</svelte:head>
-
-<h1>Nearby Fav Eats</h1>
-<h2>Venues: {venuesCount}</h2>
-<hr />
-{#each venuesIdsSortedByDistance as venueId (venueId)}
-	<p>
-		<strong>{venues[venueId].name}</strong>
-	</p>
-	<p>
-		<a href={generateGoogleUrl(venues[venueId])} target="_blank">{venues[venueId].details}</a>
-	</p>
-	<p>{openingHoursToday(venues[venueId].openingHours)}</p>
-
-	<div class="images-container">
-		{#each venues[venueId].featuredImages as imgUrl (imgUrl)}
-			<img loading="lazy" src={imgUrl} alt="Restarurant or food" />
-		{/each}
-	</div>
-	<hr />
-{/each}
-<h3>Last Updated: {lastUpdated}</h3>
