@@ -64,15 +64,17 @@
 
 	// dirty function for categories
 	const categoriesList = [
+		'Japanese',
+		'Korean',
 		'Western',
 		'Italian',
-		'Japanese',
-		'French',
 		'Chinese',
-		'Korean',
 		'Indian',
 		'Thai',
+		'Vietnamese',
+		'French',
 		'European',
+		'Mediterranean',
 		'Mexican',
 		'Vegetarian',
 		'Halal',
@@ -80,13 +82,16 @@
 		'Local Delights',
 		'Hawker Food',
 		'Kopitiam',
+		'Zi Char',
 		'Cafes & Coffee',
 		'Late Night',
 		'Bread & Pastries',
 		'Pasta',
 		'Ramen',
+		'Salads',
 		'Desserts',
-		'Bubble Tea'
+		'Bubble Tea',
+		'Bars'
 	];
 	const allowedCategories = (array) => array.filter((item) => categoriesList.includes(item));
 
