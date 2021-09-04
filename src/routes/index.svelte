@@ -147,41 +147,52 @@
 	<title>Nearby Favourite Eats</title>
 </svelte:head>
 
-<h1>Nearby Fav Eats</h1>
-<h2>Venues: {venuesCount}</h2>
-<select bind:value={filter_category}>
-	<option value="">All</option>
-	{#each categoriesList as category}
-		<option value={category}>
-			{category}
-		</option>
-	{/each}
-</select>
+<div class="flex space-x-6 items-center mx-2">
+	<div>
+		<span class="text-2xl md:text-3xl">FavEats</span> <span class="text-xs">{venuesCount}</span>
+	</div>
+	<div class="flex-grow text-right">
+		<select class="border-2 w-40 sm:w-1/2 md:w-96" bind:value={filter_category}>
+			<option value="">All</option>
+			{#each categoriesList as category}
+				<option value={category}>
+					{category}
+				</option>
+			{/each}
+		</select>
+	</div>
+</div>
 <hr />
-<div class="flex flex-wrap gap-4 p-2">
+<div class="flex flex-wrap p-2 space-y-4">
 	{#each venuesShown as venueId (venueId)}
-		<div class="w-96 p-3 bg-white rounded-xl shadow-md flex items-center space-x-3">
-			<div class="flex-shrink-0">
-				<img
-					class="h-24 w-24 rounded-lg"
-					src={venues[venueId].featuredImages[0]}
-					alt={venues[venueId].name}
-					loading="lazy"
-				/>
-			</div>
-			<div>
-				<div class="text-xl font-medium text-black">{venues[venueId].name}</div>
-				<div class="flex flex-wrap gap-1">
-					{#each allowedCategories(venues[venueId].categories) as category (category)}
-						<div class="flex-initial rounded-full py-1 px-2 text-xs bg-purple-100">{category}</div>
-					{/each}
+		<div class="w-full sm:w-1/2 md:w-1/3 flex">
+			<div class="flex bg-white rounded-xl shadow-md items-center p-3 mx-2 flex-1 space-x-3">
+				<div class="flex-shrink-0">
+					<img
+						class="h-24 w-24 rounded-lg"
+						src={venues[venueId].featuredImages[0]}
+						alt={venues[venueId].name}
+						loading="lazy"
+					/>
 				</div>
-				<p class="text-sm text-gray-500">
-					<a href={generateGoogleUrl(venues[venueId])} target="_blank">{venues[venueId].details}</a>
-				</p>
-				<p class="text-sm text-gray-500 ml-auto">
-					{openingHoursToday(venues[venueId].openingHours)}
-				</p>
+				<div>
+					<div class="text-xl font-medium text-black">{venues[venueId].name}</div>
+					<div class="flex flex-wrap gap-1">
+						{#each allowedCategories(venues[venueId].categories) as category (category)}
+							<div class="flex-initial rounded-full py-1 px-2 text-xs bg-purple-100">
+								{category}
+							</div>
+						{/each}
+					</div>
+					<p class="text-sm text-gray-500">
+						<a href={generateGoogleUrl(venues[venueId])} target="_blank"
+							>{venues[venueId].details}</a
+						>
+					</p>
+					<p class="text-sm text-gray-500 ml-auto">
+						{openingHoursToday(venues[venueId].openingHours)}
+					</p>
+				</div>
 			</div>
 		</div>
 	{/each}
