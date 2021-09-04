@@ -185,12 +185,12 @@
 							</div>
 						{/each}
 					</div>
-					<p class="text-sm text-gray-500">
+					<p class="text-sm text-gray-600">
 						<a href={generateGoogleUrl(venues[venueId])} target="_blank"
 							>{venues[venueId].details}</a
 						>
 					</p>
-					<p class="text-sm text-gray-500 ml-auto">
+					<p class="text-sm text-gray-400 ml-auto">
 						{openingHoursToday(venues[venueId].openingHours)}
 					</p>
 				</div>
