@@ -2,9 +2,24 @@
 
 Powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte);
 
+This repository holds the UI for FavEats, which is then automatically deployed upon new commits via Cloudflare Pages (https://faveats.pages.dev). 
+
 ## Live demo
 
 https://faveats.pages.dev
+
+
+## Todo 
+
+- [x] Add location / category support
+- [x] Include Tailwind CSS into SvelteKit
+- [x] Update UI with Tailwind as base
+- [x] Set up PWA support
+- [ ] Component-ise svelte files
+- [ ] Add precise location coordinates picker
+- [ ] Add multi-select for filtering categories
+- [ ] Add user authentication
+- [ ] Add multi-user support
 
 ## Creating a project
 
