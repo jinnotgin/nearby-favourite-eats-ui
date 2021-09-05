@@ -8,6 +8,19 @@ This repository holds the UI for FavEats, which is then automatically deployed u
 
 https://faveats.pages.dev
 
+
+## Todo 
+
+- [x] Add location / category support
+- [x] Include Tailwind CSS into SvelteKit
+- [x] Update UI with Tailwind as base
+- [x] Set up PWA support
+- [ ] Component-ise svelte files
+- [ ] Add precise location coordiantes picker
+- [ ] Add multi-select for filtering categories
+- [ ] Add user authentication
+- [ ] Add multi-user support
+
 ## Creating a project
 
 If you're seeing this, you've probably already done this step. Congrats!
