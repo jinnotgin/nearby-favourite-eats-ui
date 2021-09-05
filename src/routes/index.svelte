@@ -268,15 +268,4 @@
 </footer>
 
 <style>
-	div.images-container {
-		display: flex;
-		overflow-x: scroll;
-	}
-	div.images-container::-webkit-scrollbar {
-		display: none; /* for Chrome, Safari, and Opera */
-	}
-	div.images-container img {
-		height: 150px;
-		margin: 0 4px;
-	}
 </style>
