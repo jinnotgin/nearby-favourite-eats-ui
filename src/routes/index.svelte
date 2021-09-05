@@ -20,6 +20,7 @@
 			.sort(sortFuncs.nearby)
 			.filter((item) => filter_category === '' || item.categories.includes(filter_category))
 			.map((item) => item.id);
+		if (typeof window !== 'undefined') window.scrollTo(0, 0);
 		// console.log('sorted based on geolocation');
 		// console.log(venuesShown);
 	}
@@ -186,7 +187,7 @@
 	<title>FavEats: Nearby Favourite Eats</title>
 </svelte:head>
 
-<div class="m-2">
+<header class="sticky top-0 bg-white py-0.5 px-2 drop-shadow">
 	<div class="flex space-x-6 items-center">
 		<div>
 			<span class="text-2xl md:text-3xl font-semibold">FavEats</span>
@@ -204,7 +205,7 @@
 		</div>
 	</div>
 	<hr />
-	<div class="my-2">
+	<div class="text-sm md:text-base my-1.5">
 		Showing venues around: <select class="text-blue-500 capitalize" bind:value={positionType}>
 			{#each Object.keys(savedPositions) as region}
 				<option value={region}>
@@ -213,6 +214,8 @@
 			{/each}
 		</select>
 	</div>
+</header>
+<section class="m-2">
 	<div class="flex flex-wrap space-y-4">
 		{#each venuesShown as venueId (venueId)}
 			<div class="w-full sm:w-1/2 md:w-1/3 2xl:w-1/4 flex">
@@ -247,6 +250,8 @@
 			</div>
 		{/each}
 	</div>
+</section>
+<footer>
 	<div class="m-6 text-gray-400 text-xs text-center">
 		Last Updated: {lastUpdated
 			? lastUpdated.toLocaleString(undefined, {
@@ -260,7 +265,7 @@
 			  })
 			: '-'}
 	</div>
-</div>
+</footer>
 
 <style>
 	div.images-container {
