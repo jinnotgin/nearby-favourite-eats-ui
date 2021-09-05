@@ -46,7 +46,7 @@
 		});
 	};
 	const savedPositions = {
-		nearby: { name: 'nearby_notready', coords: { longitude: 0, latitude: 0 } },
+		nearby: { name: 'nearby_notready', coords: { longitude: 0, latitude: 0 } }, // this line will be updated once geolocation is done, and the name will change to "nearby", which will make it work with the location selector
 		central: {
 			name: 'central',
 			coords: { latitude: 1.2979292236801285, longitude: 103.83747174457848 }
