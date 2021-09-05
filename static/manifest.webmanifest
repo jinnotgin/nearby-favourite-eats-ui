@@ -1,7 +1,7 @@
 {
     "theme_color": "#002a52",
     "background_color": "#002a52",
-    "display": "minimal-ui",
+    "display": "standalone",
     "scope": "/",
     "start_url": "/",
     "name": "FavEats",
@@ -10,7 +10,8 @@
         {
             "src": "/icon-192x192.png",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "maskable any"
         },
         {
             "src": "/icon-256x256.png",
@@ -25,7 +26,8 @@
         {
             "src": "/icon-512x512.png",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "maskable any"
         }
     ]
 }
