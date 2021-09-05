@@ -2,6 +2,8 @@
 
 Powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte);
 
+This repository holds the UI for FavEats, which is then automatically deployed upon new commits via Cloudflare Pages (https://faveats.pages.dev). 
+
 ## Live demo
 
 https://faveats.pages.dev
