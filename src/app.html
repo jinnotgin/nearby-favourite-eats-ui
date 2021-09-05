@@ -4,8 +4,10 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- PWA Manifest -->
 		<link rel="manifest" href="/manifest.webmanifest" />
 		<link rel="apple-touch-icon" href="apple-icon-180.png" />
+		<!-- PWA for iOS -->
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<link
 			rel="apple-touch-startup-image"
@@ -137,9 +139,28 @@
 			href="apple-splash-1136-640.png"
 			media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"
 		/>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-PLRQJSL8DW"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag('js', new Date());
+
+			gtag('config', 'G-PLRQJSL8DW');
+		</script>
+		<!-- Svelte -->
 		%svelte.head%
 	</head>
 	<body>
 		<div id="svelte">%svelte.body%</div>
+		<!-- Cloudflare Web Analytics -->
+		<script
+			defer
+			src="https://static.cloudflareinsights.com/beacon.min.js"
+			data-cf-beacon='{"token": "1aaafc3cc9b44f0ea71a49a63bacd668"}'
+		></script>
+		<!-- End Cloudflare Web Analytics -->
 	</body>
 </html>
