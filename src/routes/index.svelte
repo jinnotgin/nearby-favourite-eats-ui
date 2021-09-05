@@ -219,7 +219,7 @@
 <section class="m-2">
 	<div class="flex flex-wrap space-y-4">
 		{#each venuesShown as venueId (venueId)}
-			<div class="w-full sm:w-1/2 md:w-1/3 2xl:w-1/4 flex">
+			<div class="w-full sm:w-1/2 lg:w-1/3 2xl:w-1/4 flex">
 				<div class="flex bg-white rounded-xl shadow-md items-center p-3 mx-2 flex-1 space-x-3">
 					<div class="flex-shrink-0">
 						<a href={venues[venueId].venueUrl} target="_blank"
