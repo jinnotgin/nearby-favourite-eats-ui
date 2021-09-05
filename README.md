@@ -16,7 +16,7 @@ https://faveats.pages.dev
 - [x] Update UI with Tailwind as base
 - [x] Set up PWA support
 - [ ] Component-ise svelte files
-- [ ] Add precise location coordiantes picker
+- [ ] Add precise location coordinates picker
 - [ ] Add multi-select for filtering categories
 - [ ] Add user authentication
 - [ ] Add multi-user support
