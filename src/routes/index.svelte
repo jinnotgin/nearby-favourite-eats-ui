@@ -73,6 +73,7 @@
 		'Indian',
 		'Thai',
 		'Vietnamese',
+		'Taiwanese',
 		'French',
 		'European',
 		'Mediterranean',
