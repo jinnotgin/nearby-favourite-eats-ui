@@ -8,6 +8,8 @@
 	import { onMount } from 'svelte';
 	import FilterBar from '$lib/FilterBar.svelte';
 	import FormField from '$lib/FormField.svelte';
+	import Select from '$lib/Select.svelte';
+	import { capitalizeFirstLetter } from '$lib/utils';
 
 	let targetPosition = { name: 'unknown', coords: { longitude: 0, latitude: 0 } };
 	let positionType = 'unknown';
@@ -198,26 +200,19 @@
 
 <section>
 	<FilterBar>
-		<FormField>
-			<span slot="label">Located</span>
-			<select slot="input" class="border-2 rounded-md capitalize" bind:value={positionType}>
-				{#each Object.keys(savedPositions) as region}
-					<option value={region}>
-						{region}
-					</option>
-				{/each}
-			</select>
+		<FormField label="Located">
+			<Select
+				options={Object.keys(savedPositions)}
+				display_func={(o) => capitalizeFirstLetter(o)}
+				bind:value={positionType}
+			/>
 		</FormField>
-		<FormField>
-			<span slot="label">Category</span>
-			<select slot="input" class="border-2 rounded-md capitalize" bind:value={filter_category}>
-				<option value="">All</option>
-				{#each categoriesList as category}
-					<option value={category}>
-						{category}
-					</option>
-				{/each}
-			</select>
+		<FormField label="Category">
+			<Select
+				options={['', ...categoriesList]}
+				display_func={(o) => (o === '' ? 'All' : o)}
+				bind:value={filter_category}
+			/>
 		</FormField>
 	</FilterBar>
 
