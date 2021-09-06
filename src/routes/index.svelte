@@ -265,7 +265,6 @@
 		<div class="m-6 text-gray-400 text-xs text-center">
 			Last Updated: {lastUpdated
 				? lastUpdated.toLocaleString(undefined, {
-						weekday: 'long',
 						year: 'numeric',
 						month: 'long',
 						day: 'numeric',
