@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import logo from './faveats-logo.svg';
+	import { scrollToTop } from '$lib/scrollToTop.js';
 </script>
 
 <header>
 	<div>
-		<a sveltekit:prefetch href="/">
+		<a sveltekit:prefetch href="/" on:click={scrollToTop}>
 			<div class="brand">
 				<img src={logo} alt="FavEats" />
 				<span>FavEats</span>
