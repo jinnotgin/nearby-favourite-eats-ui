@@ -42,11 +42,11 @@
 	}
 
 	.brand span {
-		@apply font-semibold text-lg;
+		@apply font-semibold text-xl;
 	}
 
 	nav {
-		@apply px-4 text-sm;
+		@apply px-4 text-base;
 	}
 	/*
 	nav {
