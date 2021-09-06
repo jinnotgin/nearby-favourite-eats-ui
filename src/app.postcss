@@ -1,4 +1,17 @@
-@tailwind base;
 /* Write your global styles here, in PostCSS syntax */
+
+@import '@fontsource/fira-mono';
+
+@tailwind base;
+
+body {
+	@apply m-0 min-h-0 bg-gradient-to-b from-gray-100 to-gray-50;
+}
+
+#svelte {
+	@apply min-h-screen flex flex-col;
+}
+
 @tailwind components;
-@tailwind utilities
+
+@tailwind utilities;

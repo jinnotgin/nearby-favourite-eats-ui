@@ -1,5 +1,13 @@
+<script context="module" lang="ts">
+	export const prerender = true;
+</script>
+
 <script lang="ts">
+	import Counter from '$lib/Counter.svelte';
+
 	import { onMount } from 'svelte';
+	import FilterBar from '$lib/FilterBar.svelte';
+	import FormField from '$lib/FormField.svelte';
 
 	let targetPosition = { name: 'unknown', coords: { longitude: 0, latitude: 0 } };
 	let positionType = 'unknown';
@@ -188,14 +196,21 @@
 	<title>FavEats: Nearby Favourite Eats</title>
 </svelte:head>
 
-<header class="sticky top-0 bg-white py-0.5 px-2 drop-shadow">
-	<div class="flex space-x-6 items-center">
-		<div>
-			<span class="text-2xl md:text-3xl font-semibold">FavEats</span>
-			<span class="text-xs font-light">{venuesCount}</span>
-		</div>
-		<div class="flex-grow text-right">
-			<select class="border-2 w-40 sm:w-1/2 md:w-96" bind:value={filter_category}>
+<section>
+	<FilterBar>
+		<FormField>
+			<span slot="label">Located Around</span>
+			<select slot="input" class="border-2 rounded-md capitalize" bind:value={positionType}>
+				{#each Object.keys(savedPositions) as region}
+					<option value={region}>
+						{region}
+					</option>
+				{/each}
+			</select>
+		</FormField>
+		<FormField>
+			<span slot="label">Catogory</span>
+			<select slot="input" class="border-2 rounded-md capitalize" bind:value={filter_category}>
 				<option value="">All</option>
 				{#each categoriesList as category}
 					<option value={category}>
@@ -203,74 +218,64 @@
 					</option>
 				{/each}
 			</select>
-		</div>
-	</div>
-	<hr />
-	<div class="text-sm md:text-base my-1.5">
-		Showing venues around: <select class="text-blue-500 capitalize" bind:value={positionType}>
-			{#each Object.keys(savedPositions) as region}
-				<option value={region}>
-					{region}
-				</option>
-			{/each}
-		</select>
-	</div>
-</header>
-<section class="m-2">
-	<div class="flex flex-wrap space-y-4">
-		{#each venuesShown as venueId (venueId)}
-			<div class="w-full sm:w-1/2 lg:w-1/3 2xl:w-1/4 flex">
-				<div class="flex bg-white rounded-xl shadow-md items-center p-3 mx-2 flex-1 space-x-3">
-					<div class="flex-shrink-0">
-						<a href={venues[venueId].venueUrl} target="_blank"
-							><img
-								class="h-24 w-24 rounded-lg"
-								src={venues[venueId].featuredImages[0]}
-								alt={venues[venueId].name}
-								loading="lazy"
-							/></a
-						>
-					</div>
-					<div class="flex-grow flex flex-col gap-1">
-						<div class="text-xl font-medium text-black">
-							<a href={venues[venueId].venueUrl} target="_blank">{venues[venueId].name}</a>
-						</div>
-						<div class="flex flex-wrap gap-1">
-							{#each allowedCategories(venues[venueId].categories) as category (category)}
-								<div class="flex-initial rounded-full py-1 px-2 text-xs bg-purple-100">
-									{category}
-								</div>
-							{/each}
-						</div>
-						<p class="text-sm text-gray-600">
-							<a href={generateGoogleUrl(venues[venueId])} target="_blank"
-								>{venues[venueId].details}</a
+		</FormField>
+	</FilterBar>
+
+	<section>
+		<div class="flex flex-wrap gap-y-4 mt-4">
+			{#each venuesShown as venueId (venueId)}
+				<div class="w-full sm:w-1/2 lg:w-1/3 flex">
+					<div class="flex bg-white rounded-xl shadow-md items-center p-3 mx-2 flex-1 space-x-3">
+						<div class="flex-shrink-0">
+							<a href={venues[venueId].venueUrl} target="_blank"
+								><img
+									class="h-24 w-24 rounded-lg"
+									src={venues[venueId].featuredImages[0]}
+									alt={venues[venueId].name}
+									loading="lazy"
+								/></a
 							>
-						</p>
-						<p class="text-sm text-gray-400 ml-auto">
-							{openingHoursToday(venues[venueId].openingHours)}
-						</p>
+						</div>
+						<div class="flex-grow flex flex-col gap-1">
+							<div class="text-xl font-medium text-black">
+								<a href={venues[venueId].venueUrl} target="_blank">{venues[venueId].name}</a>
+							</div>
+							<div class="flex flex-wrap gap-1">
+								{#each allowedCategories(venues[venueId].categories) as category (category)}
+									<div class="flex-initial rounded-full py-1 px-2 text-xs bg-purple-100">
+										{category}
+									</div>
+								{/each}
+							</div>
+							<p class="text-sm text-gray-600">
+								<a href={generateGoogleUrl(venues[venueId])} target="_blank"
+									>{venues[venueId].details}</a
+								>
+							</p>
+							<p class="text-sm text-gray-400 ml-auto">
+								{openingHoursToday(venues[venueId].openingHours)}
+							</p>
+						</div>
 					</div>
 				</div>
-			</div>
-		{/each}
-	</div>
-</section>
-<footer>
-	<div class="m-6 text-gray-400 text-xs text-center">
-		Last Updated: {lastUpdated
-			? lastUpdated.toLocaleString(undefined, {
-					weekday: 'long',
-					year: 'numeric',
-					month: 'long',
-					day: 'numeric',
-					hour: 'numeric',
-					minute: 'numeric',
-					hour12: true
-			  })
-			: '-'}
-	</div>
-</footer>
+			{/each}
+		</div>
+	</section>
+	<footer>
+		<div class="m-6 text-gray-400 text-xs text-center">
+			Last Updated: {lastUpdated
+				? lastUpdated.toLocaleString(undefined, {
+						weekday: 'long',
+						year: 'numeric',
+						month: 'long',
+						day: 'numeric',
+						hour: 'numeric',
+						minute: 'numeric',
+						hour12: true
+				  })
+				: '-'}
+		</div>
+	</footer>
 
-<style>
-</style>
+	<!-- <Counter />-->
+</section>
