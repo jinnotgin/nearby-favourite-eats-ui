@@ -37,15 +37,15 @@
 	}
 
 	.brand img {
-		@apply w-6 h-6 md:w-7 md:h-7 m-2;
+		@apply w-6 h-6 m-2;
 	}
 
 	.brand span {
-		@apply font-semibold text-lg md:text-xl;
+		@apply font-semibold text-lg;
 	}
 
 	nav {
-		@apply px-4 text-sm md:text-base;
+		@apply px-4 text-sm;
 	}
 	/*
 	nav {
