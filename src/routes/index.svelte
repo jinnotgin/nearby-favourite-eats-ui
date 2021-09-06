@@ -199,7 +199,7 @@
 <section>
 	<FilterBar>
 		<FormField>
-			<span slot="label">Located Around</span>
+			<span slot="label">Located</span>
 			<select slot="input" class="border-2 rounded-md capitalize" bind:value={positionType}>
 				{#each Object.keys(savedPositions) as region}
 					<option value={region}>
@@ -209,7 +209,7 @@
 			</select>
 		</FormField>
 		<FormField>
-			<span slot="label">Catogory</span>
+			<span slot="label">Category</span>
 			<select slot="input" class="border-2 rounded-md capitalize" bind:value={filter_category}>
 				<option value="">All</option>
 				{#each categoriesList as category}
