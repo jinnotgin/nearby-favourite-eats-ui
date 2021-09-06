@@ -1,4 +1,4 @@
-<div>
+<section>
 	<div class="label">
 		<slot name="label">
 			<span class="text-gray-400">Unknown Label</span>
@@ -9,10 +9,10 @@
 			<span class="text-gray-400">Unknown Input</span>
 		</slot>
 	</div>
-</div>
+</section>
 
 <style>
-	div {
+	section {
 		@apply flex gap-2 items-center;
 	}
 	.label {
