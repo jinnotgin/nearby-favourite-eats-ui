@@ -23,7 +23,7 @@
 		<div class="flex flex-row gap-4 place-items-center">
 			<!-- <div>{$auth.user.displayName} ({$auth.user.email})</div> -->
 			<a class="flex flex-row gap-2 place-items-center" sveltekit:prefetch href="/profile"
-				><div class="hidden sm:block">{$auth.user.displayName}</div>
+				><div>{$auth.user.displayName}</div>
 				<Avatar
 					src={$auth.user.photoURL}
 					alt="{$auth.user.displayName} ({$auth.user.email})"
