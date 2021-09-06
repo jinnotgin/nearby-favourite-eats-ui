@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import logo from './faveats-logo.svg';
-	import { scrollToTop } from '$lib/scrollToTop.js';
+	import { scrollToTop } from '$lib/scrollToTop';
+	import Auth from '$lib/Auth.svelte';
 </script>
 
 <header>
@@ -16,7 +17,7 @@
 
 	<nav>
 		<ul>
-			<li class:active={$page.path === '/about'}><a sveltekit:prefetch href="/about">About</a></li>
+			<li><Auth /></li>
 		</ul>
 		<!--
 		<ul>
@@ -47,6 +48,10 @@
 
 	nav {
 		@apply px-4 text-base;
+	}
+
+	nav ul {
+		@apply flex flex-row gap-4 place-items-center;
 	}
 	/*
 	nav {
