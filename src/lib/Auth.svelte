@@ -3,19 +3,12 @@
 -->
 <script lang="ts">
 	// TODO: learn typescript and fix import error
-	import { authStore, createAuth } from './auth';
+	import { auth } from './auth';
 	import { browser } from '$app/env';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import Button from '$lib/Button.svelte';
 	import Avatar from '$lib/Avatar.svelte';
-
-	let auth = authStore;
-	onMount(async () => {
-		if (browser) {
-			auth = createAuth();
-		}
-	});
 </script>
 
 {#if $auth.known}

@@ -1,6 +1,22 @@
 <script lang="ts">
 	import Header from '$lib/header/Header.svelte';
 	import '../app.postcss';
+
+	import { browser } from '$app/env';
+	import { auth } from '$lib/auth';
+	import { onMount, onDestroy } from 'svelte';
+
+	let db = null;
+	let unsubscribe = () => {};
+	onMount(async () => {
+		if (browser) {
+			const { db } = await import('$lib/database'); // using import here for it to work with sveltekit static adapter
+
+			auth.onAuthStateChanged(async () => {
+				await db.getUserInfo($auth.user.uid);
+			});
+		}
+	});
 </script>
 
 <Header />

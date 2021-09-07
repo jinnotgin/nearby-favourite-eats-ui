@@ -4,7 +4,7 @@ import { writable } from 'svelte/store';
 import { browser } from '$app/env';
 import {
 	getAuth,
-	onAuthStateChanged,
+	onAuthStateChanged as _onAuthStateChanged,
 	signInWithRedirect,
 	signOut as _signOut,
 	GoogleAuthProvider
@@ -17,27 +17,23 @@ export interface AuthState {
 	known: boolean;
 }
 
-export const authStore = writable<AuthState>({ user: null, known: false });
+const authStore = writable<AuthState>({ user: null, known: false });
 
 export const createAuth = () => {
 	// const { subscribe, set } = writable<AuthState>({ user: null, known: false });
 	const { subscribe, set } = authStore;
-	const auth = getAuth(app);
+
+	let auth;
+	if (browser) {
+		auth = getAuth(app);
+	}
 
 	async function listen() {
-		onAuthStateChanged(
+		_onAuthStateChanged(
 			auth,
 			(user) => set({ user, known: true }),
 			(err) => console.error(err.message)
 		);
-	}
-
-	if (browser) {
-		// listen to auth changes on client
-		listen();
-	} else {
-		// no auth on server in this example
-		set({ user: null, known: true });
 	}
 
 	function providerFor(name: string) {
@@ -59,11 +55,28 @@ export const createAuth = () => {
 		await _signOut(auth);
 	}
 
+	async function onAuthStateChanged(success = () => {}) {
+		_onAuthStateChanged(
+			auth,
+			(user) => success(user),
+			(err) => console.error(err.message)
+		);
+	}
+
+	if (browser) {
+		// listen to auth changes on client
+		listen();
+	} else {
+		// no auth on server in this example
+		set({ user: null, known: true });
+	}
+
 	return {
 		subscribe,
 		signInWith,
-		signOut
+		signOut,
+		onAuthStateChanged
 	};
 };
 
-// export const auth = createAuth();
+export const auth = createAuth();

@@ -1,38 +1,29 @@
 <script>
+	import { onMount, onDestroy } from 'svelte';
 	import { browser, dev } from '$app/env';
 	// TODO: learn typescript and fix import error
-	import { authStore, createAuth } from '$lib/auth';
-	import { onMount } from 'svelte';
+	import { auth } from '$lib/auth';
 	import { goto } from '$app/navigation';
 	import Avatar from '$lib/Avatar.svelte';
 	import Button from '$lib/Button.svelte';
 	import FormField from '$lib/FormField.svelte';
 	import Input from '$lib/Input.svelte';
 
-	let auth = authStore;
-	let db = false;
 	let usernameBurpple;
+	let db;
+	let unsubscribe = () => {};
+
 	onMount(async () => {
 		if (browser) {
-			auth = createAuth();
+			const { _db } = await import('$lib/database'); // using import here for it to work with sveltekit static adapter
+			db = _db;
 
-			const { getDb } = await import('$lib/database'); // using import here for it to work with sveltekit static adapter
-			db = getDb();
-
-			console.log(db);
-			console.log($auth);
+			unsubscribe = db.subscribe((value) => {
+				usernameBurpple = value.usernameBurpple;
+			});
 		}
 	});
-
-	$: {
-		$auth.user && db && getUsernameBurpple();
-	}
-
-	const getUsernameBurpple = async () => {
-		const doc = await db.getUserInfo($auth.user.uid);
-		console.log(doc.usernameBurpple);
-		usernameBurpple = doc.usernameBurpple;
-	};
+	onDestroy(unsubscribe);
 </script>
 
 <svelte:head>
