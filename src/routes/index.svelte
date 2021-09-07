@@ -10,6 +10,8 @@
 	import FormField from '$lib/FormField.svelte';
 	import Select from '$lib/Select.svelte';
 	import { capitalizeFirstLetter } from '$lib/utils';
+	import { auth } from '$lib/auth';
+	import Auth from '$lib/Auth.svelte';
 
 	let targetPosition = { name: 'unknown', coords: { longitude: 0, latitude: 0 } };
 	let positionType = 'unknown';
@@ -31,8 +33,6 @@
 			.filter((item) => filter_category === '' || item.categories.includes(filter_category))
 			.map((item) => item.id);
 		if (typeof window !== 'undefined') window.scrollTo(0, 0);
-		// console.log('sorted based on geolocation');
-		// console.log(venuesShown);
 	}
 
 	const burppleVenusUrl =
@@ -216,60 +216,73 @@
 		</FormField>
 	</FilterBar>
 
-	<section>
-		<div class="flex flex-wrap gap-y-4 mt-4">
-			{#each venuesShown as venueId (venueId)}
-				<div class="w-full sm:w-1/2 lg:w-1/3 flex">
-					<div class="flex bg-white rounded-xl shadow-md items-center p-3 mx-2 flex-1 space-x-3">
-						<div class="flex-shrink-0">
-							<a href={venues[venueId].venueUrl} target="_blank"
-								><img
-									class="h-24 w-24 rounded-lg"
-									src={venues[venueId].featuredImages[0]}
-									alt={venues[venueId].name}
-									loading="lazy"
-								/></a
+	{#if $auth.known}
+		{#if $auth.user}
+			<section>
+				<div class="flex flex-wrap gap-y-4 mt-4">
+					{#each venuesShown as venueId (venueId)}
+						<div class="w-full sm:w-1/2 lg:w-1/3 flex">
+							<div
+								class="flex bg-white rounded-xl shadow-md items-center p-3 mx-2 flex-1 space-x-3"
 							>
-						</div>
-						<div class="flex-grow flex flex-col gap-1">
-							<div class="text-xl font-medium text-black">
-								<a href={venues[venueId].venueUrl} target="_blank">{venues[venueId].name}</a>
-							</div>
-							<div class="flex flex-wrap gap-1">
-								{#each allowedCategories(venues[venueId].categories) as category (category)}
-									<div class="flex-initial rounded-full py-1 px-2 text-xs bg-purple-100">
-										{category}
+								<div class="flex-shrink-0">
+									<a href={venues[venueId].venueUrl} target="_blank"
+										><img
+											class="h-24 w-24 rounded-lg"
+											src={venues[venueId].featuredImages[0]}
+											alt={venues[venueId].name}
+											loading="lazy"
+										/></a
+									>
+								</div>
+								<div class="flex-grow flex flex-col gap-1">
+									<div class="text-xl font-medium text-black">
+										<a href={venues[venueId].venueUrl} target="_blank">{venues[venueId].name}</a>
 									</div>
-								{/each}
+									<div class="flex flex-wrap gap-1">
+										{#each allowedCategories(venues[venueId].categories) as category (category)}
+											<div class="flex-initial rounded-full py-1 px-2 text-xs bg-purple-100">
+												{category}
+											</div>
+										{/each}
+									</div>
+									<p class="text-sm text-gray-600">
+										<a href={generateGoogleUrl(venues[venueId])} target="_blank"
+											>{venues[venueId].details}</a
+										>
+									</p>
+									<p class="text-sm text-gray-400 ml-auto">
+										{openingHoursToday(venues[venueId].openingHours)}
+									</p>
+								</div>
 							</div>
-							<p class="text-sm text-gray-600">
-								<a href={generateGoogleUrl(venues[venueId])} target="_blank"
-									>{venues[venueId].details}</a
-								>
-							</p>
-							<p class="text-sm text-gray-400 ml-auto">
-								{openingHoursToday(venues[venueId].openingHours)}
-							</p>
 						</div>
-					</div>
+					{/each}
 				</div>
-			{/each}
-		</div>
-	</section>
-	<footer>
-		<div class="m-6 text-gray-400 text-xs text-center">
-			Last Updated: {lastUpdated
-				? lastUpdated.toLocaleString(undefined, {
-						year: 'numeric',
-						month: 'long',
-						day: 'numeric',
-						hour: 'numeric',
-						minute: 'numeric',
-						hour12: true
-				  })
-				: '-'}
-		</div>
-	</footer>
+			</section>
+			<footer>
+				<div class="m-6 text-gray-400 text-xs text-center">
+					Last Updated: {lastUpdated
+						? lastUpdated.toLocaleString(undefined, {
+								year: 'numeric',
+								month: 'long',
+								day: 'numeric',
+								hour: 'numeric',
+								minute: 'numeric',
+								hour12: true
+						  })
+						: '-'}
+				</div>
+			</footer>
+		{:else}
+			<div class="flex m-4  flex-col gap-2 place-items-center">
+				<div>Hi there! 👋 &nbsp;Please sign in first.</div>
+				<Auth />
+			</div>
+		{/if}
+	{:else}
+		Loading...
+	{/if}
 
 	<!-- <Counter />-->
 </section>

@@ -9,21 +9,31 @@
 	import FormField from '$lib/FormField.svelte';
 	import Input from '$lib/Input.svelte';
 
-	let usernameBurpple;
 	let db;
+	let dbStore = { known: false };
 	let unsubscribe = () => {};
-
 	onMount(async () => {
 		if (browser) {
 			const { _db } = await import('$lib/database'); // using import here for it to work with sveltekit static adapter
 			db = _db;
 
 			unsubscribe = db.subscribe((value) => {
-				usernameBurpple = value.usernameBurpple;
+				dbStore = value;
 			});
 		}
 	});
 	onDestroy(unsubscribe);
+
+	let formPrefilled = false;
+	let input_usernameBurpple = '';
+	$: {
+		if (dbStore.known && !formPrefilled) {
+			console.log('ran');
+			console.log(dbStore);
+			input_usernameBurpple = dbStore.usernameBurpple;
+			formPrefilled = true;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -37,14 +47,14 @@
 			<div>{$auth.user.uid}</div>
 			<div>
 				<FormField label="Burrple Username">
-					<Input bind:value={usernameBurpple} />
+					<Input bind:value={input_usernameBurpple} />
 				</FormField>
 
 				<Button
 					on:click={() => {
-						console.log($auth.user.uid, { usernameBurpple });
-						db.setUserInfo($auth.user.uid, { usernameBurpple });
-					}}>Save Burpple</Button
+						db.setUserInfo($auth.user.uid, { usernameBurpple: input_usernameBurpple });
+						goto('/');
+					}}>Save</Button
 				>
 			</div>
 			<div>
