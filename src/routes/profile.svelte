@@ -51,8 +51,8 @@
 				</FormField>
 
 				<Button
-					on:click={() => {
-						db.setUserInfo($auth.user.uid, { usernameBurpple: input_usernameBurpple });
+					on:click={async () => {
+						await db.setUserInfo($auth.user.uid, { usernameBurpple: input_usernameBurpple });
 						goto('/');
 					}}>Save</Button
 				>
