@@ -44,7 +44,6 @@
 	{#if $auth.known}
 		{#if $auth.user}
 			<div>You are currently logged in as {$auth.user.displayName} ({$auth.user.email}).</div>
-			<div>{$auth.user.uid}</div>
 			<div>
 				<FormField label="Burrple Username">
 					<Input bind:value={input_usernameBurpple} />

@@ -6,6 +6,7 @@
 	// import Counter from '$lib/Counter.svelte';
 
 	import { onMount, onDestroy } from 'svelte';
+	import { browser } from '$app/env';
 	import FilterBar from '$lib/FilterBar.svelte';
 	import FormField from '$lib/FormField.svelte';
 	import Select from '$lib/Select.svelte';
@@ -48,13 +49,29 @@
 		if (typeof window !== 'undefined') window.scrollTo(0, 0);
 	}
 
-	$: burppleVenusUrl = `https://raw.githubusercontent.com/jinnotgin/burpple-wishlist-scraper/main/data/${dbStore.usernameBurrple}venues.json`;
+	onMount(() => {
+		if (browser) getUserPosition();
+	});
+
+	$: burppleVenusUrl = `https://raw.githubusercontent.com/jinnotgin/burpple-wishlist-scraper/main/data/${dbStore.usernameBurpple}/venues.json`;
+	const getVenuesData = async () => {
+		// TODO: hack to always get new data withotu cache
+		const res = await fetch(`${burppleVenusUrl}?${new Date().getTime()}`);
+		const resJson = await res.json();
+
+		venues = resJson.data;
+		lastUpdated = new Date(resJson.end);
+	};
+	$: {
+		dbStore.known && dbStore.usernameBurpple && getVenuesData();
+	}
 
 	const dayMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 	const dayNow = dayMap[new Date().getDay()];
 
 	// geolocation
 	const getUserPosition = async () => {
+		console.log("Getting user's position...");
 		savedPositions.nearby = await _getUserPosition({
 			enableHighAccuracy: true,
 			timeout: 10000
@@ -180,18 +197,6 @@
 			return haversineDistance(origin, a.location) - haversineDistance(origin, b.location);
 		}
 	};
-
-	onMount(async () => {
-		// TODO: hack to always get new data withotu cache
-		const res = await fetch(`${burppleVenusUrl}?${new Date().getTime()}`);
-		const resJson = await res.json();
-
-		venues = resJson.data;
-		lastUpdated = new Date(resJson.end);
-
-		getUserPosition();
-	});
-
 	// TODO: for the google url, consider adjusting the scraper to give the url param directly, rather than manipulating via frontend
 	const generateGoogleUrl = (venue) => {
 		const { name = '', details = ' ' } = venue;
