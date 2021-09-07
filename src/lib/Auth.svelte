@@ -30,8 +30,7 @@
 			<!-- <div>{$auth.user.displayName} ({$auth.user.email})</div> -->
 			<a class="flex flex-row gap-2 place-items-center" sveltekit:prefetch href="/profile">
 				<div>
-					{$auth.user.displayName}
-					<span>{usernameBurpple ? ` (${usernameBurpple})` : ''}</span>
+					<span>{usernameBurpple ? `@${usernameBurpple}` : $auth.user.displayName}</span>
 				</div>
 				<Avatar
 					src={$auth.user.photoURL}
