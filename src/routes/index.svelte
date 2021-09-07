@@ -3,15 +3,28 @@
 </script>
 
 <script lang="ts">
-	import Counter from '$lib/Counter.svelte';
+	// import Counter from '$lib/Counter.svelte';
 
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import FilterBar from '$lib/FilterBar.svelte';
 	import FormField from '$lib/FormField.svelte';
 	import Select from '$lib/Select.svelte';
 	import { capitalizeFirstLetter } from '$lib/utils';
 	import { auth } from '$lib/auth';
 	import Auth from '$lib/Auth.svelte';
+
+	let dbStore = { usernameBurrple: null, known: false };
+	let unsubscribe = () => {};
+	onMount(async () => {
+		if (browser) {
+			const { db } = await import('$lib/database'); // using import here for it to work with sveltekit static adapter
+
+			unsubscribe = db.subscribe((value) => {
+				dbStore = value;
+			});
+		}
+	});
+	onDestroy(unsubscribe);
 
 	let targetPosition = { name: 'unknown', coords: { longitude: 0, latitude: 0 } };
 	let positionType = 'unknown';
@@ -35,8 +48,7 @@
 		if (typeof window !== 'undefined') window.scrollTo(0, 0);
 	}
 
-	const burppleVenusUrl =
-		'https://raw.githubusercontent.com/jinnotgin/burpple-wishlist-scraper/main/data/venues.json';
+	$: burppleVenusUrl = `https://raw.githubusercontent.com/jinnotgin/burpple-wishlist-scraper/main/data/${dbStore.usernameBurrple}venues.json`;
 
 	const dayMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 	const dayNow = dayMap[new Date().getDay()];
@@ -216,10 +228,17 @@
 		</FormField>
 	</FilterBar>
 
-	{#if $auth.known}
-		{#if $auth.user}
-			<section>
-				<div class="flex flex-wrap gap-y-4 mt-4">
+	<section>
+		<div class="flex flex-wrap gap-y-4 mt-4">
+			{#if $auth.known}
+				{#if $auth.user}
+					{#if venuesShown.length === 0}
+						<div>We are unable to find any data to show! 😔</div>
+						<div>
+							Please come back in a few hours time, and do check that your Burrple username is
+							correctly entered as well. 👍
+						</div>
+					{/if}
 					{#each venuesShown as venueId (venueId)}
 						<div class="w-full sm:w-1/2 lg:w-1/3 flex">
 							<div
@@ -258,31 +277,31 @@
 							</div>
 						</div>
 					{/each}
-				</div>
-			</section>
-			<footer>
-				<div class="m-6 text-gray-400 text-xs text-center">
-					Last Updated: {lastUpdated
-						? lastUpdated.toLocaleString(undefined, {
-								year: 'numeric',
-								month: 'long',
-								day: 'numeric',
-								hour: 'numeric',
-								minute: 'numeric',
-								hour12: true
-						  })
-						: '-'}
-				</div>
-			</footer>
-		{:else}
-			<div class="flex m-4  flex-col gap-2 place-items-center">
-				<div>Hi there! 👋 &nbsp;Please sign in first.</div>
-				<Auth />
-			</div>
-		{/if}
-	{:else}
-		Loading...
-	{/if}
+				{:else}
+					<div class="flex m-4  flex-col gap-2 place-items-center">
+						<div>Hi there! 👋 &nbsp;Please sign in first.</div>
+						<Auth />
+					</div>
+				{/if}
+			{:else}
+				Loading...
+			{/if}
+		</div>
+	</section>
+	<footer>
+		<div class="m-6 text-gray-400 text-xs text-center">
+			Last Updated: {lastUpdated
+				? lastUpdated.toLocaleString(undefined, {
+						year: 'numeric',
+						month: 'long',
+						day: 'numeric',
+						hour: 'numeric',
+						minute: 'numeric',
+						hour12: true
+				  })
+				: '-'}
+		</div>
+	</footer>
 
 	<!-- <Counter />-->
 </section>
