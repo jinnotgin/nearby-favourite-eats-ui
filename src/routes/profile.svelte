@@ -2,7 +2,6 @@
 	import { browser, dev } from '$app/env';
 	// TODO: learn typescript and fix import error
 	import { authStore, createAuth } from '$lib/auth';
-	import { createDb } from '$lib/database';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import Avatar from '$lib/Avatar.svelte';
@@ -11,12 +10,14 @@
 	import Input from '$lib/Input.svelte';
 
 	let auth = authStore;
-	let db;
+	let db = false;
 	let usernameBurpple;
 	onMount(async () => {
 		if (browser) {
 			auth = createAuth();
-			db = createDb();
+
+			const { getDb } = await import('$lib/database');
+			db = getDb();
 
 			console.log(db);
 			console.log($auth);

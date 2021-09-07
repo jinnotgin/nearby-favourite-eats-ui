@@ -2,7 +2,7 @@ import { browser } from '$app/env';
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 import { app } from './firebase';
 
-export const createDb = () => {
+export const getDb = () => {
 	if (browser) {
 		const db = getFirestore(app);
 		const USERS = 'users';
