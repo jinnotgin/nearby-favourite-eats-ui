@@ -16,7 +16,7 @@
 		if (browser) {
 			auth = createAuth();
 
-			const { getDb } = await import('$lib/database');
+			const { getDb } = await import('$lib/database'); // using import here for it to work with sveltekit static adapter
 			db = getDb();
 
 			console.log(db);
@@ -25,7 +25,7 @@
 	});
 
 	$: {
-		$auth.user && getUsernameBurpple();
+		$auth.user && db && getUsernameBurpple();
 	}
 
 	const getUsernameBurpple = async () => {
