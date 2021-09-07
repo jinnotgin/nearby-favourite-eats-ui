@@ -238,10 +238,12 @@
 			{#if $auth.known}
 				{#if $auth.user}
 					{#if venuesShown.length === 0}
-						<div>We are unable to find any data to show! 😔</div>
-						<div>
-							Please come back in a few hours time, and do check that your Burrple username is
-							correctly entered as well. 👍
+						<div class="flex-1 flex m-4 flex-col gap-2 place-items-center">
+							<div>We are unable to find any data to show! 😔</div>
+							<div>
+								Please come back in a few hours time, and do check that your Burrple username is
+								correctly entered as well. 👍
+							</div>
 						</div>
 					{/if}
 					{#each venuesShown as venueId (venueId)}
@@ -283,7 +285,7 @@
 						</div>
 					{/each}
 				{:else}
-					<div class="flex m-4  flex-col gap-2 place-items-center">
+					<div class="flex-1 flex m-4 flex-col gap-2 place-items-center">
 						<div>Hi there! 👋 &nbsp;Please sign in first.</div>
 						<Auth />
 					</div>
