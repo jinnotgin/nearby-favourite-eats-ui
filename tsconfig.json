@@ -17,6 +17,7 @@
 			*/
 		"sourceMap": true,
 		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true, // needed this to fix firestore, even tho it should be default true with esModuleInterop?
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 		"baseUrl": ".",
