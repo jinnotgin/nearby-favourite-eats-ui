@@ -52,7 +52,7 @@
 
 				<Button
 					on:click={async () => {
-						await db.setUserInfo($auth.user.uid, { usernameBurpple: input_usernameBurpple });
+						await db.setUserInfo($auth.user.uid, { usernameBurpple: input_usernameBurpple.trim() });
 						goto('/');
 					}}>Save</Button
 				>
