@@ -40,7 +40,7 @@
 					size="2rem"
 				/>-->
 				<Avatar
-					src={`https://robohash.org/${$auth.user.uid}.png?set=set5&size=32x32`}
+					src={`https://robohash.org/${$auth.user.uid}.png?set=set5&size=64x64`}
 					alt="Anonymous user's randomly generated avatar"
 					size="2rem"
 				/>
