@@ -181,11 +181,13 @@
 				{/each}
 			</Grid>
 			{#if venuesShown.length > pagesMaxItems}
-				<div class="flex place-content-center">
+				<div class="flex place-content-center mb-10">
 					<Button
+						fullWidth
+						variant="secondary"
 						on:click={() => {
 							pagesShown += 1;
-						}}>Load More</Button
+						}}>Show more venues</Button
 					>
 				</div>
 			{/if}
