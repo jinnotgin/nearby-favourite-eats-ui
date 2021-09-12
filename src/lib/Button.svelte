@@ -1,9 +1,24 @@
-<button on:click>
+<script>
+	export let fullWidth = undefined;
+	export let variant = 'primary';
+
+	let customClassStrings = `
+		${fullWidth ? 'w-full' : ''}
+		${variant === 'primary' ? 'bg-blue-600 text-white ' : ''}
+		${
+			variant === 'secondary'
+				? 'bg-white text-blue-600 border-blue-600 border-2 border-opacity-50'
+				: ''
+		}
+	`;
+</script>
+
+<button class={customClassStrings} on:click>
 	<slot />
 </button>
 
 <style>
 	button {
-		@apply bg-blue-600 text-white p-2 rounded-md text-sm select-none cursor-pointer;
+		@apply p-2 rounded-md text-sm select-none cursor-pointer;
 	}
 </style>
