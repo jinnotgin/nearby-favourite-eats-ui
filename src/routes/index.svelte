@@ -9,6 +9,7 @@
 	// Utils & Constants
 	import { sortFuncs, capitalizeFirstLetter } from '$lib/utils';
 	import { categoriesList, savedPositions } from '$lib/utils-dataProcessing';
+	import { goto } from '$app/navigation';
 
 	// UI Components
 	import FilterBar from '$lib/FilterBar.svelte';
@@ -49,7 +50,7 @@
 
 	let venues = {};
 	let venuesKnown = false;
-	let lastUpdated;
+	let lastUpdated = false;
 
 	let filter_category = '';
 	let venuesShown = [];
@@ -149,31 +150,49 @@
 
 	<section>
 		{#if !$auth.known}
-			<IllustrativeMessage title="Loading... " body="" />
+			<IllustrativeMessage title="Please wait... " body="" />
 		{:else if !$auth.user}
 			<IllustrativeMessage title="Hi there! 👋 " body="Please sign in first." />
 			<div class="flex place-content-center">
 				<Auth />
 			</div>
 		{:else if !dbStore.known}
-			<IllustrativeMessage title="Loading... " body="" />
+			<IllustrativeMessage title="Please wait... " body="" />
 		{:else if !dbStore.usernameBurpple}
-			<IllustrativeMessage title="Incomplete Profile">
+			<IllustrativeMessage title="You're almost there! 💪">
 				<div>
-					Please provide your Burpple username in the <a
-						href="/profile"
-						class="text-blue-600 underline">User Profile Settings</a
-					>.
+					Please provide your <span class="font-semibold">Burpple Username</span> in your Profile settings.
+				</div>
+				<div class="flex place-content-center">
+					<Button on:click={() => goto('/profile')}>Go to Profile</Button>
 				</div>
 			</IllustrativeMessage>
 		{:else if !venuesKnown}
-			<IllustrativeMessage title="Loading... " body="" />
+			<IllustrativeMessage title="Please wait... " body="" />
+		{:else if venuesShown.length === 0 && lastUpdated}
+			<IllustrativeMessage title="Data not found 🤔">
+				<div>
+					We couldn't find any wishlisted places from <a
+						href={`https://www.burpple.com/@${dbStore.usernameBurpple}/wishlist`}
+						class="text-blue-600 underline"
+						target="_blank">your Burpple account</a
+					>.
+				</div>
+				<div>
+					Please check that your Burpple Username is correct, and you have wishlisted some places as
+					well! 🙏
+				</div>
+				<div class="flex place-content-center">
+					<Button on:click={() => goto('/profile')}>Go to Profile</Button>
+				</div>
+			</IllustrativeMessage>
 		{:else if venuesShown.length === 0}
-			<IllustrativeMessage
-				title="No Data Found 😔"
-				body="Please come back in a few hours time, and check that your Burrple username is
-							correctly entered as well! 👍"
-			/>
+			<IllustrativeMessage title="Preparing your data 🏃‍♂️">
+				<div>
+					Please come back in a <span class="font-semibold">few hours time</span>, and check that
+					your Burrple username is correctly entered as well! 👍
+				</div>
+			</IllustrativeMessage>
 		{:else}
 			<Grid>
 				{#each venuesShown.slice(0, pageSize * pagesShown) as venueId (venueId)}
@@ -181,7 +200,7 @@
 				{/each}
 			</Grid>
 			{#if venuesShown.length > pagesMaxItems}
-				<div class="flex place-content-center">
+				<div class="flex place-content-center mb-8">
 					<Button
 						fullWidth
 						variant="secondary"
@@ -204,6 +223,7 @@
 					: '-'}
 			</div>
 		{/if}
+		<div class="mb-8" />
 	</section>
 
 	<!-- <Counter />-->
