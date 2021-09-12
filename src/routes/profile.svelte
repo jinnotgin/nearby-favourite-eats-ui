@@ -28,8 +28,6 @@
 	let input_usernameBurpple = '';
 	$: {
 		if (dbStore.known && !formPrefilled) {
-			console.log('ran');
-			console.log(dbStore);
 			input_usernameBurpple = dbStore.usernameBurpple;
 			formPrefilled = true;
 		}

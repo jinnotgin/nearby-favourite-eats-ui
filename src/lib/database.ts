@@ -39,14 +39,15 @@ export const getDb = () => {
 
 		if (docSnap.exists()) {
 			const fields = docSnap.data();
-			console.log('Document data:', fields);
+			console.log(`Document data for ${uid}:`, fields);
 
 			const { usernameBurpple } = fields;
 			set({ usernameBurpple, known: true });
 			return fields;
 		} else {
 			// doc.data() will be undefined in this case
-			console.log('No such document!');
+			console.log(`No document for ${uid}`);
+			set({ usernameBurpple: '', known: true });
 			return false;
 		}
 	};
