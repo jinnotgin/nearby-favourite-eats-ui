@@ -10,6 +10,7 @@
 				? 'bg-white text-blue-600 border-blue-600 border-2 border-opacity-50'
 				: ''
 		}
+		${variant === 'danger' ? 'bg-red-700 text-white ' : ''}
 	`;
 </script>
 
