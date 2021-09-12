@@ -68,7 +68,7 @@ export const createAuth = () => {
 		listen();
 	} else {
 		// no auth on server in this example
-		set({ user: null, known: true });
+		set({ user: null, known: false });
 	}
 
 	return {

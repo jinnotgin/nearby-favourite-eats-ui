@@ -13,7 +13,9 @@
 			const { db } = await import('$lib/database'); // using import here for it to work with sveltekit static adapter
 
 			auth.onAuthStateChanged(async () => {
-				await db.getUserInfo($auth.user.uid);
+				if ($auth.user) {
+					await db.getUserInfo($auth.user.uid);
+				}
 			});
 		}
 	});

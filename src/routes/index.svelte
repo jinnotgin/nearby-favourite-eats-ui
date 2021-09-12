@@ -3,17 +3,27 @@
 </script>
 
 <script lang="ts">
-	// import Counter from '$lib/Counter.svelte';
-
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/env';
+
+	// Utils & Constants
+	import { sortFuncs, capitalizeFirstLetter } from '$lib/utils';
+	import { categoriesList, savedPositions } from '$lib/utils-dataProcessing';
+
+	// UI Components
 	import FilterBar from '$lib/FilterBar.svelte';
 	import FormField from '$lib/FormField.svelte';
 	import Select from '$lib/Select.svelte';
-	import { capitalizeFirstLetter } from '$lib/utils';
+	import IllustrativeMessage from '$lib/IllustrativeMessage.svelte';
+	import Grid from '$lib/Grid.svelte';
+	import VenueCard from '$lib/VenueCard.svelte';
+	import Button from '$lib/Button.svelte';
+
+	// User Authorisation
 	import { auth } from '$lib/auth';
 	import Auth from '$lib/Auth.svelte';
 
+	// User Data
 	let dbStore = { usernameBurrple: null, known: false };
 	let unsubscribe = () => {};
 	onMount(async () => {
@@ -27,188 +37,82 @@
 	});
 	onDestroy(unsubscribe);
 
+	// STATES
 	let targetPosition = { name: 'unknown', coords: { longitude: 0, latitude: 0 } };
-	let positionType = 'unknown';
+	let positionName = 'unknown';
 	$: {
-		if (Object.keys(savedPositions).includes(positionType)) {
-			targetPosition = savedPositions[positionType];
-			console.log(targetPosition);
+		if (Object.keys(savedPositions).includes(positionName)) {
+			targetPosition = savedPositions[positionName];
+			console.log('Changed position to', targetPosition);
 		}
 	}
-	let lastUpdated;
+
 	let venues = {};
+	let venuesKnown = false;
+	let lastUpdated;
+
 	let filter_category = '';
-	$: venuesCount = Object.keys(venues).length;
 	let venuesShown = [];
 	$: {
+		// updates venues to be shown when targetPosition changes
 		targetPosition;
 		venuesShown = Object.values(venues)
-			.sort(sortFuncs.nearby)
+			.sort((a, b) => sortFuncs.nearby(a, b, targetPosition))
 			.filter((item) => filter_category === '' || item.categories.includes(filter_category))
 			.map((item) => item.id);
 		if (typeof window !== 'undefined') window.scrollTo(0, 0);
+		pagesShown = 1;
 	}
+
+	let pageSize = 12;
+	let pagesShown = 1;
+	$: pagesMaxItems = pageSize * pagesShown;
 
 	onMount(() => {
 		if (browser) getUserPosition();
 	});
 
-	$: burppleVenusUrl = `https://raw.githubusercontent.com/jinnotgin/burpple-wishlist-scraper/main/data/${dbStore.usernameBurpple}/venues.json`;
-	const getVenuesData = async () => {
-		// TODO: hack to always get new data withotu cache
-		const res = await fetch(`${burppleVenusUrl}?${new Date().getTime()}`);
-		const resJson = await res.json();
-
-		venues = resJson.data;
-		lastUpdated = new Date(resJson.end);
-	};
-	$: {
-		dbStore.known && dbStore.usernameBurpple && getVenuesData();
-	}
-
-	const dayMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-	const dayNow = dayMap[new Date().getDay()];
-
-	// geolocation
+	// Geolocation
 	const getUserPosition = async () => {
 		console.log("Getting user's position...");
 		savedPositions.nearby = await _getUserPosition({
 			enableHighAccuracy: true,
 			timeout: 10000
 		});
-		console.log(targetPosition);
-		if (positionType === 'unknown') positionType = 'nearby';
+		console.log("Resolved user's position.");
+		if (positionName === 'unknown') positionName = 'nearby';
 	};
 	const _getUserPosition = async (options) => {
 		return new Promise(function (resolve, reject) {
 			navigator.geolocation.getCurrentPosition(resolve, reject, options);
 		});
 	};
-	const savedPositions = {
-		nearby: { name: 'nearby_notready', coords: { longitude: 0, latitude: 0 } }, // this line will be updated once geolocation is done, and the name will change to "nearby", which will make it work with the location selector
-		central: {
-			name: 'central',
-			coords: { latitude: 1.2979292236801285, longitude: 103.83747174457848 }
-		},
-		east: { name: 'east', coords: { latitude: 1.3198961460010883, longitude: 103.92639233213994 } },
-		west: { name: 'west', coords: { latitude: 1.3408331882693638, longitude: 103.72623517944368 } },
-		north: {
-			name: 'north',
-			coords: { latitude: 1.4146262348752339, longitude: 103.80107953499733 }
-		},
-		northeast: {
-			name: 'northeast',
-			coords: { latitude: 1.3899144001617987, longitude: 103.88279034518895 }
+
+	// Get user data
+	$: burppleVenusUrl = `https://raw.githubusercontent.com/jinnotgin/burpple-wishlist-scraper/main/data/${dbStore.usernameBurpple}/venues.json`;
+	const getVenuesData = async () => {
+		if (!!!dbStore.known || !!!dbStore.usernameBurpple) return false;
+
+		try {
+			// TODO: hack to always get new data without cache
+			// const res = await fetch(`${burppleVenusUrl}?${new Date().getTime()}`);
+			// const res = await fetch(`${burppleVenusUrl}?${new Date().setMinutes(0, 0, 0)}`);
+			const res = await fetch(`${burppleVenusUrl}`);
+			const resJson = await res.json();
+
+			venues = resJson.data;
+			lastUpdated = new Date(resJson.end);
+			venuesKnown = true;
+		} catch (e) {
+			venues = {};
+			lastUpdated = false;
+			venuesKnown = true;
 		}
 	};
-
-	// dirty function for categories
-	const categoriesList = [
-		'Japanese',
-		'Korean',
-		'Western',
-		'Italian',
-		'Chinese',
-		'Indian',
-		'Thai',
-		'Vietnamese',
-		'Taiwanese',
-		'French',
-		'European',
-		'Mediterranean',
-		'Mexican',
-		'Vegetarian',
-		'Halal',
-		'Breakfast & Brunch',
-		'Local Delights',
-		'Hawker Food',
-		'Kopitiam',
-		'Zi Char',
-		'Cafes & Coffee',
-		'Late Night',
-		'Bread & Pastries',
-		'Pasta',
-		'Ramen',
-		'Salads',
-		'Desserts',
-		'Bubble Tea',
-		'Bars'
-	];
-	const allowedCategories = (array) => array.filter((item) => categoriesList.includes(item));
-
-	// dirty function to get opening hours
-	const openingHoursToday = (textStr) => {
-		if (!!!textStr.includes(dayNow)) return '';
-		return textStr.split(`${dayNow}:`)[1].split('\n')[0];
-	};
-
-	// https://jaredtong.com/burpple-beyond/
-	// https://github.com/tongrhj/lickilicky/blob/79d12e46aeaf5a404d72c75c68cd48399639d236/index.html#L185-L209
-	const sortFuncs = {
-		name: function (a, b) {
-			if (a.name > b.name) {
-				return 1;
-			} else if (a.name < b.name) {
-				return -1;
-			} else {
-				return 0;
-			}
-		},
-		price: function (a, b) {
-			function extractPrice(formatted_price) {
-				var price = (formatted_price && formatted_price.match(/\d/g).join('')) || 0;
-				return parseInt(price, 10);
-			}
-			return extractPrice(a.formatted_price) - extractPrice(b.formatted_price);
-		},
-		nearby: function (a, b) {
-			function haversineDistance(p1, p2) {
-				var atan2 = Math.atan2;
-				var cos = Math.cos;
-				var sin = Math.sin;
-				var sqrt = Math.sqrt;
-				var PI = Math.PI;
-				var R = 6378137; // (mean) radius of Earth (meters)
-
-				function squared(x) {
-					return x * x;
-				}
-				function toRad(x) {
-					return (x * PI) / 180.0;
-				}
-				var aLat = p1.latitude;
-				var bLat = p2.latitude;
-				var aLng = p1.longitude;
-				var bLng = p2.longitude;
-
-				var dLat = toRad(bLat - aLat);
-				var dLon = toRad(bLng - aLng);
-
-				var f =
-					squared(sin(dLat / 2.0)) + cos(toRad(aLat)) * cos(toRad(bLat)) * squared(sin(dLon / 2.0));
-				var c = 2 * atan2(sqrt(f), sqrt(1 - f));
-
-				return R * c;
-			}
-			var origin = {
-				latitude: targetPosition.coords.latitude,
-				longitude: targetPosition.coords.longitude
-			};
-			return haversineDistance(origin, a.location) - haversineDistance(origin, b.location);
-		}
-	};
-	// TODO: for the google url, consider adjusting the scraper to give the url param directly, rather than manipulating via frontend
-	const generateGoogleUrl = (venue) => {
-		const { name = '', details = ' ' } = venue;
-
-		const addressParts = details.split(' ');
-		const postal = addressParts[addressParts.length - 1].trim();
-
-		const GOOGLE_MAPS_BASE = 'https://www.google.com/maps/search/?api=1&query=';
-		const query = encodeURIComponent(`${name.trim()} ${postal}`);
-
-		return `${GOOGLE_MAPS_BASE}${query}`;
-	};
+	$: {
+		// Load venues data when the burpple username is known
+		dbStore.known && dbStore.usernameBurpple && getVenuesData();
+	}
 </script>
 
 <svelte:head>
@@ -221,94 +125,85 @@
 			<Select
 				options={Object.keys(savedPositions)}
 				display_func={(o) => capitalizeFirstLetter(o)}
-				bind:value={positionType}
+				bind:value={positionName}
 			/>
 		</FormField>
-		<FormField label="Category">
+		<FormField label="Type">
 			<Select
 				options={['', ...categoriesList]}
 				display_func={(o) => (o === '' ? 'All' : o)}
 				bind:value={filter_category}
 			/>
 		</FormField>
+		<Button
+			on:click={() => {
+				venuesShown = [];
+				venuesKnown = false;
+
+				getUserPosition();
+				setTimeout(getVenuesData, 250);
+			}}
+			>Refresh
+		</Button>
 	</FilterBar>
 
 	<section>
-		<div class="flex flex-wrap gap-y-4 mt-4">
-			{#if $auth.known}
-				{#if $auth.user}
-					{#if venuesShown.length === 0}
-						<div class="flex-1 flex m-4 flex-col gap-2 place-items-center">
-							<div>We are unable to find any data to show! 😔</div>
-							<div>
-								Please come back in a few hours time, and do check that your Burrple username is
-								correctly entered as well. 👍
-							</div>
-						</div>
-					{/if}
-					{#each venuesShown as venueId (venueId)}
-						<div class="w-full sm:w-1/2 lg:w-1/3 flex">
-							<div
-								class="flex bg-white rounded-xl shadow-md items-center p-3 mx-2 flex-1 space-x-3"
-							>
-								<div class="flex-shrink-0">
-									<a href={venues[venueId].venueUrl} target="_blank"
-										><img
-											class="h-24 w-24 rounded-lg"
-											src={venues[venueId].featuredImages[0]}
-											alt={venues[venueId].name}
-											loading="lazy"
-										/></a
-									>
-								</div>
-								<div class="flex-grow flex flex-col gap-1">
-									<div class="text-xl font-medium text-black">
-										<a href={venues[venueId].venueUrl} target="_blank">{venues[venueId].name}</a>
-									</div>
-									<div class="flex flex-wrap gap-1">
-										{#each allowedCategories(venues[venueId].categories) as category (category)}
-											<div class="flex-initial rounded-full py-1 px-2 text-xs bg-purple-100">
-												{category}
-											</div>
-										{/each}
-									</div>
-									<p class="text-sm text-gray-600">
-										<a href={generateGoogleUrl(venues[venueId])} target="_blank"
-											>{venues[venueId].details}</a
-										>
-									</p>
-									<p class="text-sm text-gray-400 ml-auto">
-										{openingHoursToday(venues[venueId].openingHours)}
-									</p>
-								</div>
-							</div>
-						</div>
-					{/each}
-				{:else}
-					<div class="flex-1 flex m-4 flex-col gap-2 place-items-center">
-						<div>Hi there! 👋 &nbsp;Please sign in first.</div>
-						<Auth />
-					</div>
-				{/if}
-			{:else}
-				Loading...
+		{#if !$auth.known}
+			<IllustrativeMessage title="Loading... " body="" />
+		{:else if !$auth.user}
+			<IllustrativeMessage title="Hi there! 👋 " body="Please sign in first." />
+			<div class="flex place-content-center">
+				<Auth />
+			</div>
+		{:else if !dbStore.known}
+			<IllustrativeMessage title="Loading... " body="" />
+		{:else if !dbStore.usernameBurpple}
+			<IllustrativeMessage title="Incomplete Profile">
+				<div>
+					Please provide your Burpple username in the <a
+						href="/profile"
+						class="text-blue-600 underline">User Profile Settings</a
+					>.
+				</div>
+			</IllustrativeMessage>
+		{:else if !venuesKnown}
+			<IllustrativeMessage title="Loading... " body="" />
+		{:else if venuesShown.length === 0}
+			<IllustrativeMessage
+				title="No Data Found 😔"
+				body="Please come back in a few hours time, and check that your Burrple username is
+							correctly entered as well! 👍"
+			/>
+		{:else}
+			<Grid>
+				{#each venuesShown.slice(0, pageSize * pagesShown) as venueId (venueId)}
+					<VenueCard venue={venues[venueId]} />
+				{/each}
+			</Grid>
+			{#if venuesShown.length > pagesMaxItems}
+				<div class="flex place-content-center">
+					<Button
+						on:click={() => {
+							pagesShown += 1;
+						}}>Load More</Button
+					>
+				</div>
 			{/if}
-		</div>
+			<div class="m-6 text-gray-400 text-xs text-center">
+				Last Updated: {lastUpdated
+					? lastUpdated.toLocaleString(undefined, {
+							year: 'numeric',
+							month: 'long',
+							day: 'numeric',
+							hour: 'numeric',
+							minute: 'numeric',
+							hour12: true
+					  })
+					: '-'}
+			</div>
+		{/if}
+		<div class="mb-24" />
 	</section>
-	<footer>
-		<div class="m-6 text-gray-400 text-xs text-center">
-			Last Updated: {lastUpdated
-				? lastUpdated.toLocaleString(undefined, {
-						year: 'numeric',
-						month: 'long',
-						day: 'numeric',
-						hour: 'numeric',
-						minute: 'numeric',
-						hour12: true
-				  })
-				: '-'}
-		</div>
-	</footer>
 
 	<!-- <Counter />-->
 </section>

@@ -44,18 +44,23 @@
 	{#if $auth.known}
 		{#if $auth.user}
 			<div>You are currently logged in as {$auth.user.displayName} ({$auth.user.email}).</div>
-			<div>
-				<FormField label="Burrple Username">
-					<Input bind:value={input_usernameBurpple} />
-				</FormField>
+			<div class="flex gap-4 flex-wrap">
+				<div class="flex-shrink">
+					<FormField label="Burrple Username">
+						<Input bind:value={input_usernameBurpple} />
+					</FormField>
+				</div>
 
 				<Button
 					on:click={async () => {
-						await db.setUserInfo($auth.user.uid, { usernameBurpple: input_usernameBurpple.trim() });
+						await db.setUserInfo($auth.user.uid, {
+							usernameBurpple: input_usernameBurpple.trim()
+						});
 						goto('/');
 					}}>Save</Button
 				>
 			</div>
+			<hr />
 			<div>
 				<Button
 					on:click={() => {

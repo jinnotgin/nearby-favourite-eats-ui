@@ -2,19 +2,16 @@
 	export let label = 'Unknown label';
 </script>
 
-<section>
-	<div class="label">{label}</div>
-	<div class="flex-1">
+<div class="flex gap-2 items-center">
+	<div class="label flex-shrink">{label}</div>
+	<div class="flex-grow">
 		<slot>
 			<span class="text-gray-400">Unknown Input</span>
 		</slot>
 	</div>
-</section>
+</div>
 
 <style>
-	section {
-		@apply flex gap-2 items-center;
-	}
 	.label {
 		@apply font-semibold;
 	}

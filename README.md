@@ -14,11 +14,12 @@ https://faveats.pages.dev
 - [x] Include Tailwind CSS into SvelteKit
 - [x] Update UI with Tailwind as base
 - [x] Set up PWA support
-- [ ] Component-ise svelte files
+- [x] Component-ise svelte files
+- [x] Add user authentication
+- [x] Add multi-user support
+- [ ] Improve profile page
 - [ ] Add precise location coordinates picker
 - [ ] Add multi-select for filtering categories
-- [ ] Add user authentication
-- [ ] Add multi-user support
 
 ## Creating a project
 
