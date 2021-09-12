@@ -181,7 +181,7 @@
 				{/each}
 			</Grid>
 			{#if venuesShown.length > pagesMaxItems}
-				<div class="flex place-content-center mb-10">
+				<div class="flex place-content-center">
 					<Button
 						fullWidth
 						variant="secondary"
@@ -204,7 +204,6 @@
 					: '-'}
 			</div>
 		{/if}
-		<div class="mb-24" />
 	</section>
 
 	<!-- <Counter />-->
