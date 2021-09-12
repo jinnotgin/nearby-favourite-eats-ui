@@ -121,14 +121,14 @@
 
 <section>
 	<FilterBar>
-		<FormField label="Located">
+		<FormField label="Location">
 			<Select
 				options={Object.keys(savedPositions)}
 				display_func={(o) => capitalizeFirstLetter(o)}
 				bind:value={positionName}
 			/>
 		</FormField>
-		<FormField label="Type">
+		<FormField label="Category">
 			<Select
 				options={['', ...categoriesList]}
 				display_func={(o) => (o === '' ? 'All' : o)}
