@@ -49,11 +49,27 @@
 	}
 
 	let venues = {};
-	let venuesKnown = false;
 	let lastUpdated = false;
-
 	let filter_category = '';
+	let venuesKnown = false;
 	let venuesShown = [];
+	let pageSize = 12;
+	let pagesShown = 1;
+	$: pagesMaxItems = pageSize * pagesShown;
+
+	const resetVenuesState = () => {
+		console.log('Resetting states related to venues...');
+		venues = {};
+		venuesKnown = false;
+		venuesShown = [];
+		lastUpdated = false;
+		filter_category = '';
+		pagesShown = 1;
+	};
+	$: {
+		!$auth.user && resetVenuesState();
+	}
+
 	$: {
 		// updates venues to be shown when targetPosition changes
 		targetPosition;
@@ -64,10 +80,6 @@
 		if (typeof window !== 'undefined') window.scrollTo(0, 0);
 		pagesShown = 1;
 	}
-
-	let pageSize = 12;
-	let pagesShown = 1;
-	$: pagesMaxItems = pageSize * pagesShown;
 
 	onMount(() => {
 		if (browser) getUserPosition();
@@ -121,39 +133,50 @@
 </svelte:head>
 
 <section>
-	<FilterBar>
-		<FormField label="Location">
-			<Select
-				options={Object.keys(savedPositions)}
-				display_func={(o) => capitalizeFirstLetter(o)}
-				bind:value={positionName}
-			/>
-		</FormField>
-		<FormField label="Category">
-			<Select
-				options={['', ...categoriesList]}
-				display_func={(o) => (o === '' ? 'All' : o)}
-				bind:value={filter_category}
-			/>
-		</FormField>
-		<Button
-			variant="secondary"
-			on:click={() => {
-				venuesShown = [];
-				venuesKnown = false;
+	{#if lastUpdated}
+		<!-- TODO: May not be intuitive why we use lastUpdated as the condition check-->
+		<FilterBar>
+			<FormField label="Location">
+				<Select
+					options={Object.keys(savedPositions)}
+					display_func={(o) => capitalizeFirstLetter(o)}
+					bind:value={positionName}
+				/>
+			</FormField>
+			<FormField label="Category">
+				<Select
+					options={['', ...categoriesList]}
+					display_func={(o) => (o === '' ? 'All' : o)}
+					bind:value={filter_category}
+				/>
+			</FormField>
+			<Button
+				variant="secondary"
+				on:click={() => {
+					venuesShown = [];
+					venuesKnown = false;
 
-				getUserPosition();
-				setTimeout(getVenuesData, 250);
-			}}
-			>Refresh
-		</Button>
-	</FilterBar>
+					getUserPosition();
+					setTimeout(getVenuesData, 250);
+				}}
+				>Refresh
+			</Button>
+		</FilterBar>
+	{/if}
 
 	<section>
 		{#if !$auth.known}
 			<IllustrativeMessage title="Please wait... " body="" />
 		{:else if !$auth.user}
-			<IllustrativeMessage title="Hi there! 👋 " body="Please sign in first." />
+			<IllustrativeMessage title="Hi there! 👋 ">
+				<div>Welcome to <em>FavEats</em> - helping you find nearby favourite eats! 🍱</div>
+				<div>
+					<em>FavEats</em> does this by referencing your
+					<span class="font-semibold">Burpple account</span>
+					and gathering the places that are currently in your wishlist.
+				</div>
+				<div>Sounds interesting? Click on the button below to begin!</div>
+			</IllustrativeMessage>
 			<div class="flex place-content-center">
 				<Auth />
 			</div>
@@ -191,7 +214,7 @@
 			<IllustrativeMessage title="Preparing your data 🏃‍♂️">
 				<div>
 					Please come back in a <span class="font-semibold">few hours time</span>, and check that
-					your Burrple username is correctly entered as well! 👍
+					your Burrple Username is correctly entered as well! 👍
 				</div>
 			</IllustrativeMessage>
 		{:else}

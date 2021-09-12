@@ -7,7 +7,9 @@ import {
 	onAuthStateChanged as _onAuthStateChanged,
 	signInWithRedirect,
 	signOut as _signOut,
-	GoogleAuthProvider
+	GoogleAuthProvider,
+	signInAnonymously as _signInAnonymously,
+	deleteUser as _deleteUser
 } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import { app } from './firebase';
@@ -26,6 +28,7 @@ export const createAuth = () => {
 	let auth;
 	if (browser) {
 		auth = getAuth(app);
+		console.log(auth);
 	}
 
 	async function listen() {
@@ -51,8 +54,19 @@ export const createAuth = () => {
 		await signInWithRedirect(auth, provider);
 	}
 
+	async function signInAnonymously() {
+		set({ user: null, known: false });
+		await _signInAnonymously(auth);
+	}
+
 	async function signOut() {
 		await _signOut(auth);
+	}
+
+	async function deleteUser() {
+		console.log('Deleting user...');
+		set({ user: null, known: false });
+		await _deleteUser(auth.currentUser);
 	}
 
 	async function onAuthStateChanged(success = () => {}) {
@@ -73,9 +87,11 @@ export const createAuth = () => {
 
 	return {
 		subscribe,
+		signInAnonymously,
 		signInWith,
 		signOut,
-		onAuthStateChanged
+		onAuthStateChanged,
+		deleteUser
 	};
 };
 

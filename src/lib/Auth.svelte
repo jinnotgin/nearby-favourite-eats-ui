@@ -9,6 +9,7 @@
 	import { goto } from '$app/navigation';
 	import Button from '$lib/Button.svelte';
 	import Avatar from '$lib/Avatar.svelte';
+	import { signInAnonymously } from '@firebase/auth';
 
 	let usernameBurpple = '';
 	let unsubscribe = () => {};
@@ -30,11 +31,17 @@
 			<!-- <div>{$auth.user.displayName} ({$auth.user.email})</div> -->
 			<a class="flex flex-row gap-2 place-items-center" sveltekit:prefetch href="/profile">
 				<div>
-					<span>{usernameBurpple ? `@${usernameBurpple}` : $auth.user.displayName}</span>
+					<!--<span>{usernameBurpple ? `@${usernameBurpple}` : $auth.user.displayName}</span>-->
+					<span>{usernameBurpple ? `@${usernameBurpple}` : 'Anonymous'}</span>
 				</div>
-				<Avatar
+				<!--<Avatar
 					src={$auth.user.photoURL}
 					alt="{$auth.user.displayName} ({$auth.user.email})"
+					size="2rem"
+				/>-->
+				<Avatar
+					src={`https://robohash.org/${$auth.user.uid}.png?set=set5&size=32x32`}
+					alt="Anonymous user's randomly generated avatar"
 					size="2rem"
 				/>
 			</a>
@@ -46,7 +53,8 @@
 			>-->
 		</div>
 	{:else}
-		<Button on:click={() => auth.signInWith('google')}>Sign In with Google</Button>
+		<!-- <Button on:click={() => auth.signInWith('google')}>Sign In with Google</Button> -->
+		<Button on:click={() => auth.signInAnonymously()}>Let's Begin</Button>
 	{/if}
 {:else}
 	Loading...

@@ -43,7 +43,7 @@
 		{#if $auth.user}
 			<a class="text-blue-600" href="/">❮ Back to Home</a>
 			<div class="text-5xl font-bold">Profile</div>
-			<div>You are currently logged in as {$auth.user.displayName} ({$auth.user.email}).</div>
+			<!--<div>You are currently logged in as {$auth.user.displayName} ({$auth.user.email}).</div>-->
 			<hr />
 			<div class="flex flex-col gap-4 flex-wrap">
 				<div class="flex-shrink">
@@ -64,10 +64,18 @@
 			</div>
 			<hr />
 			<div>
-				<Button
+				<!--<Button
 					variant="danger"
 					on:click={() => {
 						auth.signOut();
+						goto('/');
+					}}>Sign Out</Button
+				>-->
+				<Button
+					variant="danger"
+					on:click={() => {
+						db.deleteUserInfo($auth.user.uid);
+						auth.deleteUser();
 						goto('/');
 					}}>Sign Out</Button
 				>

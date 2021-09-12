@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/env';
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
 import { app } from './firebase';
 
 export interface UserInfo {
@@ -8,7 +8,7 @@ export interface UserInfo {
 	known: boolean;
 }
 
-const dbStore = writable<AuthState>({ user: null, known: false });
+const dbStore = writable({ usernameBurpple: null, known: false });
 
 export const getDb = () => {
 	const { subscribe, set } = dbStore;
@@ -22,6 +22,7 @@ export const getDb = () => {
 
 	const setUserInfo = async (uid, fields) => {
 		try {
+			fields.lastLoggedIn = new Date();
 			await setDoc(doc(db, USERS, uid), fields);
 
 			const { usernameBurpple } = fields;
@@ -43,6 +44,9 @@ export const getDb = () => {
 
 			const { usernameBurpple } = fields;
 			set({ usernameBurpple, known: true });
+
+			// update last logged in timing
+			await setDoc(doc(db, USERS, uid), { ...fields, lastLoggedIn: new Date() });
 			return fields;
 		} else {
 			// doc.data() will be undefined in this case
@@ -52,10 +56,23 @@ export const getDb = () => {
 		}
 	};
 
+	const deleteUserInfo = async (uid) => {
+		try {
+			await deleteDoc(doc(db, USERS, uid));
+
+			set({ usernameBurpple: null, known: false });
+			return true;
+		} catch (e) {
+			console.error('Error deleting document: ', e);
+			return false;
+		}
+	};
+
 	return {
 		subscribe,
 		setUserInfo,
-		getUserInfo
+		getUserInfo,
+		deleteUserInfo
 	};
 };
 

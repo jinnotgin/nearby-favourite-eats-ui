@@ -3,7 +3,7 @@
 	export let body = undefined;
 </script>
 
-<div class="flex-1 flex my-4 flex-col gap-4 place-items-center">
+<div class="flex-1 flex my-4 flex-col gap-4 place-items-center text-center">
 	<div class="w-20">
 		<svg
 			class="w-100"
