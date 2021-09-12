@@ -137,6 +137,7 @@
 			/>
 		</FormField>
 		<Button
+			variant="secondary"
 			on:click={() => {
 				venuesShown = [];
 				venuesKnown = false;
