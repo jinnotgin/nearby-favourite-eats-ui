@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Header from '$lib/header/Header.svelte';
+	import smoothscroll from 'smoothscroll-polyfill';
 	import '../app.postcss';
 
 	import { browser } from '$app/env';
@@ -17,6 +18,9 @@
 					await db.getUserInfo($auth.user.uid);
 				}
 			});
+
+			// apply smooth scroll polyfill (https://github.com/iamdustan/smoothscroll)
+			smoothscroll.polyfill();
 		}
 	});
 </script>
