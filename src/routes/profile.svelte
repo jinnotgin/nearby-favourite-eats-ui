@@ -47,20 +47,21 @@
 			<div class="text-5xl font-bold">Profile</div>
 			<div>You are currently logged in as {$auth.user.displayName} ({$auth.user.email}).</div>
 			<hr />
-			<div class="flex gap-4 flex-wrap">
+			<div class="flex flex-col gap-4 flex-wrap">
 				<div class="flex-shrink">
 					<FormField label="Burrple Username">
 						<Input bind:value={input_usernameBurpple} />
 					</FormField>
 				</div>
-
+			</div>
+			<div>
 				<Button
 					on:click={async () => {
 						await db.setUserInfo($auth.user.uid, {
 							usernameBurpple: input_usernameBurpple.trim()
 						});
 						goto('/');
-					}}>Save</Button
+					}}>Save Profile</Button
 				>
 			</div>
 			<hr />

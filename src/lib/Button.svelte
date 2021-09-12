@@ -20,6 +20,6 @@
 
 <style>
 	button {
-		@apply p-2 rounded-md text-sm select-none cursor-pointer;
+		@apply py-2 px-4 rounded-md text-sm select-none cursor-pointer;
 	}
 </style>
