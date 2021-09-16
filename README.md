@@ -10,7 +10,7 @@ Powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/package
 
 ## Live demo
 
-https://faveats.pages.dev
+https://faveats.net
 
 ## Todo
 
