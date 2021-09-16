@@ -1,10 +1,10 @@
 # nearby-favourite-eats-ui
 
-Welcome to [FavEats](https://faveats.pages.dev) - helping you find nearby favourite eats! 🍱
+Welcome to [FavEats](https://faveats.net) - helping you find nearby favourite eats! 🍱
 
 FavEats does this by referencing your Burpple account and gathering the places that are currently in your wishlist.
 
-This repository holds the UI for FavEats, which is then automatically deployed upon new commits using Cloudflare Pages (https://faveats.pages.dev).
+This repository holds the UI for FavEats, which is then automatically deployed upon new commits using Cloudflare Pages.
 
 Powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte);
 
