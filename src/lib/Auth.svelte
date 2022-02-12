@@ -39,11 +39,7 @@
 					alt="{$auth.user.displayName} ({$auth.user.email})"
 					size="2rem"
 				/>-->
-				<Avatar
-					src={`https://robohash.org/${$auth.user.uid}.png?set=set1&size=64x64`}
-					alt="Anonymous user's randomly generated avatar"
-					size="2rem"
-				/>
+				<Avatar uid={$auth.user.uid} size="2rem" />
 			</a>
 			<!--<Button
 				on:click={() => {

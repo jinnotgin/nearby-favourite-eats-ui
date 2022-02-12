@@ -34,6 +34,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@dicebear/adventurer-neutral": "^4.10.2",
 		"@fontsource/fira-mono": "^4.2.2",
 		"@lukeed/uuid": "^2.0.0",
 		"cookie": "^0.4.1",
