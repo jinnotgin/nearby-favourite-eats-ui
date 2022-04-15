@@ -293,7 +293,9 @@
 							}}>Show more venues</Button
 						>
 						{#if isDemoMode()}
-							<Button fullWidth on:click={() => goto('/', true)}>🚨 - Exit Demo Mode - 🚨</Button>
+							<Button fullWidth on:click={() => goto('/', { replaceState: true })}
+								>🚨 - Exit Demo Mode - 🚨</Button
+							>
 						{/if}
 					</div>
 				{/if}
