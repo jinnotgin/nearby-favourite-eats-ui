@@ -53,7 +53,7 @@
 	let filter_category = '';
 	let venuesKnown = false;
 	let venuesShown = [];
-	let pageSize = 12;
+	let pageSize = 3 * 5;
 	let pagesShown = 1;
 	$: pagesMaxItems = pageSize * pagesShown;
 
