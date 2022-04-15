@@ -20,9 +20,9 @@ https://faveats.net
 - [x] Set up PWA support
 - [x] Component-ise svelte files
 - [x] Add user authentication
-- [x] Add multi-user support
+- [x] Add user support
+- [x] Add precise location coordinates picker
 - [ ] Improve profile page
-- [ ] Add precise location coordinates picker
 - [ ] Add multi-select for filtering categories
 
 ## Creating a project
