@@ -82,7 +82,7 @@
 		z-index: 1000;
 		position: absolute;
 		left: 50%;
-		top: 40vh;
+		top: 35vh;
 		/* bring your own prefixes */
 		transform: translate(-50%, 20%);
 	}
