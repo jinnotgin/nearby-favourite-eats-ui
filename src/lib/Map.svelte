@@ -83,7 +83,6 @@
 		position: absolute;
 		left: 50%;
 		top: 35vh;
-		/* bring your own prefixes */
 		transform: translate(-50%, 20%);
 		user-select: none;
 		-moz-user-select: none;
