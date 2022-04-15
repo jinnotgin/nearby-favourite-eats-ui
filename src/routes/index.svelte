@@ -23,7 +23,6 @@
 	// map selector related
 	import Map from '$lib/Map.svelte';
 	let mapComponent;
-	const SET_LOCATION = 'Set Location...';
 
 	// User Authorisation
 	import { auth } from '$lib/auth';
