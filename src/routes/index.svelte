@@ -58,7 +58,6 @@
 			console.log('Changed position to', positionName, targetPosition);
 		}
 		if (positionName !== 'custom') {
-			console.log('delete custom');
 			delete allPositions.custom;
 			allPositions = { ...allPositions };
 		}
@@ -108,7 +107,8 @@
 			enableHighAccuracy: true,
 			timeout: 10000
 		});
-		allPositions.nearby.coords = geolocationData;
+		const { coords } = geolocationData;
+		allPositions.nearby.coords = coords;
 		console.log("Resolved user's position.");
 		if (positionName === 'unknown') positionName = 'nearby';
 	};
