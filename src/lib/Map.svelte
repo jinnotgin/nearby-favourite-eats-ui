@@ -85,6 +85,12 @@
 		top: 35vh;
 		/* bring your own prefixes */
 		transform: translate(-50%, 20%);
+		user-select: none;
+		-moz-user-select: none;
+		-khtml-user-select: none;
+		-webkit-user-select: none;
+		-o-user-select: none;
+		pointer-events: none;
 	}
 	.center svg {
 		height: 100%;
