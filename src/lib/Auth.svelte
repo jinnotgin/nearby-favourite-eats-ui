@@ -30,11 +30,11 @@
 
 {#if isDemoMode()}
 	<div class="flex flex-row gap-4 place-items-center">
-		<div>
+		<div class="flex flex-row gap-2 place-items-center">
 			<strong>(Demo Mode)</strong>
 			<span>@jinnotgin</span>
+			<Avatar uid={`jin-DEMO-SEED-10`} size="2rem" />
 		</div>
-		<Avatar uid={`jin-DEMO-SEED-10`} size="2rem" />
 	</div>
 {:else if $auth.known}
 	{#if $auth.user}
