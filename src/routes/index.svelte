@@ -8,6 +8,7 @@
 
 	// Utils & Constants
 	import { sortFuncs, capitalizeFirstLetter, isDemoMode } from '$lib/utils';
+	import { scrollToTop } from '$lib/scrollToTop';
 	import { categoriesList, savedPositions } from '$lib/utils-dataProcessing';
 	import { goto } from '$app/navigation';
 
@@ -192,6 +193,7 @@
 						variant="secondary"
 						thin
 						on:click={() => {
+							scrollToTop();
 							showMap = true;
 						}}>Set Custom</Button
 					>
