@@ -22,6 +22,9 @@ const config = {
 			fallback: null
 		}),
 		vite: {
+			ssr: {
+				external: ['whatwg-url']
+			},
 			resolve: {
 				alias: {
 					$utils: path.resolve('./src/utils')
