@@ -36,7 +36,7 @@
 			if (isDemoMode()) {
 				dbStore = { usernameBurpple: 'jinnotgin', known: true };
 				console.log(
-					'Demonstration Mode - default to "jinnotgin" with limted functionality.',
+					'Demonstration Mode - default to "jinnotgin" with limited functionality.',
 					dbStore
 				);
 			} else {
