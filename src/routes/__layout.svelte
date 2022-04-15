@@ -31,7 +31,10 @@
 </main>
 
 <footer>
-	<p>Copyright 2021 <a href="https://jinn.me" target="_blank">jinn.me</a>.</p>
+	<p>
+		Copyright 2021 - {new Date().getFullYear()} || Made by
+		<a href="https://jinn.me" target="_blank">jinn.me</a>.
+	</p>
 </footer>
 
 <style>
