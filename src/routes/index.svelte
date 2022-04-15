@@ -20,6 +20,11 @@
 	import VenueCard from '$lib/VenueCard.svelte';
 	import Button from '$lib/Button.svelte';
 
+	// map selector related
+	import Map from '$lib/Map.svelte';
+	let mapComponent;
+	const SET_LOCATION = 'Set Location...';
+
 	// User Authorisation
 	import { auth } from '$lib/auth';
 	import Auth from '$lib/Auth.svelte';
@@ -41,10 +46,21 @@
 	// STATES
 	let targetPosition = { name: 'unknown', coords: { longitude: 0, latitude: 0 } };
 	let positionName = 'unknown';
+	let showMap = false;
+	let allPositions = {
+		nearby: { name: 'nearby', coords: { longitude: 0, latitude: 0 } },
+		...savedPositions,
+		custom: { name: 'custom', coords: { longitude: 0, latitude: 0 } }
+	};
 	$: {
-		if (Object.keys(savedPositions).includes(positionName)) {
-			targetPosition = savedPositions[positionName];
-			console.log('Changed position to', targetPosition);
+		if (Object.keys(allPositions).includes(positionName)) {
+			targetPosition = allPositions[positionName];
+			console.log('Changed position to', positionName, targetPosition);
+		}
+		if (positionName !== 'custom') {
+			console.log('delete custom');
+			delete allPositions.custom;
+			allPositions = { ...allPositions };
 		}
 	}
 
@@ -88,10 +104,11 @@
 	// Geolocation
 	const getUserPosition = async () => {
 		console.log("Getting user's position...");
-		savedPositions.nearby = await _getUserPosition({
+		const geolocationData = await _getUserPosition({
 			enableHighAccuracy: true,
 			timeout: 10000
 		});
+		allPositions.nearby.coords = geolocationData;
 		console.log("Resolved user's position.");
 		if (positionName === 'unknown') positionName = 'nearby';
 	};
@@ -134,121 +151,158 @@
 
 <section>
 	{#if lastUpdated}
-		<!-- TODO: May not be intuitive why we use lastUpdated as the condition check-->
-		<FilterBar>
-			<FormField label="Location">
-				<Select
-					options={Object.keys(savedPositions)}
-					display_func={(o) => capitalizeFirstLetter(o)}
-					bind:value={positionName}
-				/>
-			</FormField>
-			<FormField label="Category">
-				<Select
-					options={['', ...categoriesList]}
-					display_func={(o) => (o === '' ? 'All' : o)}
-					bind:value={filter_category}
-				/>
-			</FormField>
-			<Button
-				variant="secondary"
-				on:click={() => {
-					venuesShown = [];
-					venuesKnown = false;
+		{#if showMap}
+			<div class="flex flex-col gap-2">
+				<Map bind:this={mapComponent} />
+				<Button
+					fullWidth
+					on:click={() => {
+						const mapCenter = mapComponent.getCenter();
+						allPositions = {
+							...allPositions,
+							custom: {
+								name: 'custom',
+								coords: { longitude: mapCenter.lng, latitude: mapCenter.lat }
+							}
+						};
+						positionName = 'custom';
+						showMap = false;
+					}}>Set Custom Location</Button
+				>
+			</div>
+		{:else}
+			<!-- TODO: May not be intuitive why we use lastUpdated as the condition check-->
+			<FilterBar>
+				<FormField label="Location">
+					<Select
+						options={Object.values(allPositions).map((item) => {
+							return { name: capitalizeFirstLetter(item.name), value: item.name };
+						})}
+						bind:value={positionName}
+					/>
 
-					getUserPosition();
-					setTimeout(getVenuesData, 250);
-				}}
-				>Refresh
-			</Button>
-		</FilterBar>
+					<Button
+						variant="secondary"
+						thin
+						on:click={() => {
+							showMap = true;
+						}}>Set Custom</Button
+					>
+				</FormField>
+				<FormField label="Category">
+					<Select
+						options={[
+							{ name: 'All', value: '' },
+							...categoriesList.map((item) => {
+								return { name: item, value: item };
+							})
+						]}
+						bind:value={filter_category}
+					/>
+				</FormField>
+				<Button
+					variant="secondary"
+					thin
+					on:click={() => {
+						venuesShown = [];
+						venuesKnown = false;
+
+						getUserPosition();
+						setTimeout(getVenuesData, 250);
+					}}
+					>Refresh
+				</Button>
+			</FilterBar>
+		{/if}
 	{/if}
 
-	<section>
-		{#if !$auth.known}
-			<IllustrativeMessage title="Please wait... " body="" />
-		{:else if !$auth.user}
-			<IllustrativeMessage title="Hi there! 👋 ">
-				<div>Welcome to <em>FavEats</em> - helping you find nearby favourite eats! 🍱</div>
-				<div>
-					<em>FavEats</em> does this by referencing your
-					<span class="font-semibold">Burpple account</span>
-					and gathering the places that are currently in your wishlist.
-				</div>
-				<div>Sounds interesting? Click on the button below to begin!</div>
-			</IllustrativeMessage>
-			<div class="flex place-content-center">
-				<Auth />
-			</div>
-		{:else if !dbStore.known}
-			<IllustrativeMessage title="Please wait... " body="" />
-		{:else if !dbStore.usernameBurpple}
-			<IllustrativeMessage title="You're almost there! 💪">
-				<div>
-					Please provide your <span class="font-semibold">Burpple Username</span> in your Profile settings.
-				</div>
+	{#if !showMap}
+		<section>
+			{#if !$auth.known}
+				<IllustrativeMessage title="Please wait... " body="" />
+			{:else if !$auth.user}
+				<IllustrativeMessage title="Hi there! 👋 ">
+					<div>Welcome to <em>FavEats</em> - helping you find nearby favourite eats! 🍱</div>
+					<div>
+						<em>FavEats</em> does this by referencing your
+						<span class="font-semibold">Burpple account</span>
+						and gathering the places that are currently in your wishlist.
+					</div>
+					<div>Sounds interesting? Click on the button below to begin!</div>
+				</IllustrativeMessage>
 				<div class="flex place-content-center">
-					<Button on:click={() => goto('/profile')}>Go to Profile</Button>
+					<Auth />
 				</div>
-			</IllustrativeMessage>
-		{:else if !venuesKnown}
-			<IllustrativeMessage title="Please wait... " body="" />
-		{:else if venuesShown.length === 0 && lastUpdated}
-			<IllustrativeMessage title="Data not found 🤔">
-				<div>
-					We couldn't find any wishlisted places from <a
-						href={`https://www.burpple.com/@${dbStore.usernameBurpple}/wishlist`}
-						class="text-blue-600 underline"
-						target="_blank">your Burpple account</a
-					>.
-				</div>
-				<div>
-					Please check that your Burpple Username is correct, and you have wishlisted some places as
-					well! 🙏
-				</div>
-				<div class="flex place-content-center">
-					<Button on:click={() => goto('/profile')}>Go to Profile</Button>
-				</div>
-			</IllustrativeMessage>
-		{:else if venuesShown.length === 0}
-			<IllustrativeMessage title="Preparing your data 🏃‍♂️">
-				<div>
-					Please come back in a <span class="font-semibold">few hours time</span>, and check that
-					your Burrple Username is correctly entered as well! 👍
-				</div>
-			</IllustrativeMessage>
-		{:else}
-			<Grid>
-				{#each venuesShown.slice(0, pageSize * pagesShown) as venueId (venueId)}
-					<VenueCard venue={venues[venueId]} />
-				{/each}
-			</Grid>
-			{#if venuesShown.length > pagesMaxItems}
-				<div class="flex place-content-center mb-8">
-					<Button
-						fullWidth
-						variant="secondary"
-						on:click={() => {
-							pagesShown += 1;
-						}}>Show more venues</Button
-					>
+			{:else if !dbStore.known}
+				<IllustrativeMessage title="Please wait... " body="" />
+			{:else if !dbStore.usernameBurpple}
+				<IllustrativeMessage title="You're almost there! 💪">
+					<div>
+						Please provide your <span class="font-semibold">Burpple Username</span> in your Profile settings.
+					</div>
+					<div class="flex place-content-center">
+						<Button on:click={() => goto('/profile')}>Go to Profile</Button>
+					</div>
+				</IllustrativeMessage>
+			{:else if !venuesKnown}
+				<IllustrativeMessage title="Please wait... " body="" />
+			{:else if venuesShown.length === 0 && lastUpdated}
+				<IllustrativeMessage title="Data not found 🤔">
+					<div>
+						We couldn't find any wishlisted places from <a
+							href={`https://www.burpple.com/@${dbStore.usernameBurpple}/wishlist`}
+							class="text-blue-600 underline"
+							target="_blank">your Burpple account</a
+						>.
+					</div>
+					<div>
+						Please check that your Burpple Username is correct, and you have wishlisted some places
+						as well! 🙏
+					</div>
+					<div class="flex place-content-center">
+						<Button on:click={() => goto('/profile')}>Go to Profile</Button>
+					</div>
+				</IllustrativeMessage>
+			{:else if venuesShown.length === 0}
+				<IllustrativeMessage title="Preparing your data 🏃‍♂️">
+					<div>
+						Please come back in a <span class="font-semibold">few hours time</span>, and check that
+						your Burrple Username is correctly entered as well! 👍
+					</div>
+				</IllustrativeMessage>
+			{:else}
+				<Grid>
+					{#each venuesShown.slice(0, pageSize * pagesShown) as venueId (venueId)}
+						<VenueCard venue={venues[venueId]} />
+					{/each}
+				</Grid>
+				{#if venuesShown.length > pagesMaxItems}
+					<div class="flex place-content-center mb-8">
+						<Button
+							fullWidth
+							variant="secondary"
+							on:click={() => {
+								pagesShown += 1;
+							}}>Show more venues</Button
+						>
+					</div>
+				{/if}
+				<div class="m-6 text-gray-400 text-xs text-center">
+					Last Updated: {lastUpdated
+						? lastUpdated.toLocaleString(undefined, {
+								year: 'numeric',
+								month: 'long',
+								day: 'numeric',
+								hour: 'numeric',
+								minute: 'numeric',
+								hour12: true
+						  })
+						: '-'}
 				</div>
 			{/if}
-			<div class="m-6 text-gray-400 text-xs text-center">
-				Last Updated: {lastUpdated
-					? lastUpdated.toLocaleString(undefined, {
-							year: 'numeric',
-							month: 'long',
-							day: 'numeric',
-							hour: 'numeric',
-							minute: 'numeric',
-							hour12: true
-					  })
-					: '-'}
-			</div>
-		{/if}
-		<div class="mb-8" />
-	</section>
+			<div class="mb-8" />
+		</section>
+	{/if}
 
 	<!-- <Counter />-->
 </section>

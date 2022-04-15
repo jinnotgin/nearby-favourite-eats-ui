@@ -39,6 +39,7 @@
 		"@lukeed/uuid": "^2.0.0",
 		"cookie": "^0.4.1",
 		"firebase": "^9.0.1",
+		"leaflet": "^1.7.1",
 		"smoothscroll-polyfill": "^0.4.4"
 	}
 }

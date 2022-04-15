@@ -1,5 +1,4 @@
 export const savedPositions = {
-	nearby: { name: 'nearby', coords: { longitude: 0, latitude: 0 } },
 	central: {
 		name: 'central',
 		coords: { latitude: 1.2979292236801285, longitude: 103.83747174457848 }
@@ -9,10 +8,6 @@ export const savedPositions = {
 	north: {
 		name: 'north',
 		coords: { latitude: 1.4146262348752339, longitude: 103.80107953499733 }
-	},
-	northeast: {
-		name: 'northeast',
-		coords: { latitude: 1.3899144001617987, longitude: 103.88279034518895 }
 	}
 };
 

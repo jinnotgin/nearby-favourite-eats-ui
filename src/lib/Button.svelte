@@ -1,9 +1,12 @@
 <script>
 	export let fullWidth = undefined;
+	export let thin = undefined;
 	export let variant = 'primary';
 
 	let customClassStrings = `
+		py-2
 		${fullWidth ? 'w-full' : ''}
+		${thin ? 'py-1' : ''}
 		${variant === 'primary' ? 'bg-blue-600 text-white ' : ''}
 		${
 			variant === 'secondary'
@@ -12,6 +15,7 @@
 		}
 		${variant === 'danger' ? 'bg-red-700 text-white ' : ''}
 	`;
+	console.log(customClassStrings);
 </script>
 
 <button class={customClassStrings} on:click>
@@ -20,6 +24,6 @@
 
 <style>
 	button {
-		@apply py-2 px-3 rounded-md text-sm select-none cursor-pointer;
+		@apply px-3 rounded-md text-sm select-none cursor-pointer;
 	}
 </style>
