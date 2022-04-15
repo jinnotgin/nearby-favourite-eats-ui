@@ -7,7 +7,7 @@
 	import { browser } from '$app/env';
 
 	// Utils & Constants
-	import { sortFuncs, capitalizeFirstLetter } from '$lib/utils';
+	import { sortFuncs, capitalizeFirstLetter, isDemoMode } from '$lib/utils';
 	import { categoriesList, savedPositions } from '$lib/utils-dataProcessing';
 	import { goto } from '$app/navigation';
 
@@ -33,11 +33,19 @@
 	let unsubscribe = () => {};
 	onMount(async () => {
 		if (browser) {
-			const { db } = await import('$lib/database'); // using import here for it to work with sveltekit static adapter
+			if (isDemoMode()) {
+				dbStore = { usernameBurpple: 'jinnotgin', known: true };
+				console.log(
+					'Demonstration Mode - default to "jinnotgin" with limted functionality.',
+					dbStore
+				);
+			} else {
+				const { db } = await import('$lib/database'); // using import here for it to work with sveltekit static adapter
 
-			unsubscribe = db.subscribe((value) => {
-				dbStore = value;
-			});
+				unsubscribe = db.subscribe((value) => {
+					dbStore = value;
+				});
+			}
 		}
 	});
 	onDestroy(unsubscribe);
@@ -81,7 +89,7 @@
 		pagesShown = 1;
 	};
 	$: {
-		!$auth.user && resetVenuesState();
+		!$auth.user && !isDemoMode() && resetVenuesState();
 	}
 
 	$: {
@@ -217,9 +225,9 @@
 
 	{#if !showMap}
 		<section>
-			{#if !$auth.known}
+			{#if !$auth.known && !isDemoMode()}
 				<IllustrativeMessage title="Please wait... " body="" />
-			{:else if !$auth.user}
+			{:else if !$auth.user && !isDemoMode()}
 				<IllustrativeMessage title="Hi there! 👋 ">
 					<div>Welcome to <em>FavEats</em> - helping you find nearby favourite eats! 🍱</div>
 					<div>
@@ -276,7 +284,7 @@
 					{/each}
 				</Grid>
 				{#if venuesShown.length > pagesMaxItems}
-					<div class="flex place-content-center mb-8">
+					<div class="flex flex-col gap-2 place-content-center mb-8">
 						<Button
 							fullWidth
 							variant="secondary"
@@ -284,6 +292,9 @@
 								pagesShown += 1;
 							}}>Show more venues</Button
 						>
+						{#if isDemoMode()}
+							<Button fullWidth on:click={() => goto('/', true)}>🚨 - Exit Demo Mode - 🚨</Button>
+						{/if}
 					</div>
 				{/if}
 				<div class="m-6 text-gray-400 text-xs text-center">

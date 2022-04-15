@@ -3,11 +3,12 @@
 	import logo from './faveats-logo.svg';
 	import { scrollToTop } from '$lib/scrollToTop';
 	import Auth from '$lib/Auth.svelte';
+	import { isDemoMode } from '$lib/utils';
 </script>
 
 <header>
 	<div>
-		<a sveltekit:prefetch href="/" on:click={scrollToTop}>
+		<a sveltekit:prefetch href={isDemoMode() ? '/?demo=true' : '/'} on:click={scrollToTop}>
 			<div class="brand">
 				<img src={logo} alt="FavEats" />
 				<span>FavEats</span>

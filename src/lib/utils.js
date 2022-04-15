@@ -1,3 +1,5 @@
+import { browser } from '$app/env';
+
 export function capitalizeFirstLetter(string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -56,4 +58,8 @@ export const sortFuncs = {
 		};
 		return haversineDistance(origin, a.location) - haversineDistance(origin, b.location);
 	}
+};
+
+export const isDemoMode = () => {
+	return browser ? location.href.includes('demo=true') : false;
 };
