@@ -6,26 +6,21 @@
 	let internalState_value;
 
 	$: {
-		console.log({ options, value, prev_value, internalState_value });
 		if (prev_value === value) {
-			// external values haven't changed, so its an internal state chagne
-			// so, we we will propogate the value here externally
+			// external values haven't changed, so its an internal state change
+			// so, we we will propogate the internal state change externally
 			value = internalState_value;
 		} else {
-			// externval value has changed
+			// external value has changed
 			// so, we will update the internal state
 			internalState_value = value;
 		}
 		prev_value = value;
-
-		console.log({ options, value, prev_value, internalState_value });
 	}
 </script>
 
 <select class="border-2 rounded-md capitalize" bind:value={internalState_value}>
 	{#each options as option, i}
-		<option value={option.value} selected={value === option.value}
-			>{display_func(option.name)}</option
-		>
+		<option value={option.value}>{display_func(option.name)}</option>
 	{/each}
 </select>
