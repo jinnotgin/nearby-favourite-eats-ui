@@ -14,8 +14,9 @@
 				: ''
 		}
 		${variant === 'danger' ? 'bg-red-700 text-white ' : ''}
-	`;
-	console.log(customClassStrings);
+	`
+		.replace(/\s+/g, ' ')
+		.trim();
 </script>
 
 <button class={customClassStrings} on:click>
