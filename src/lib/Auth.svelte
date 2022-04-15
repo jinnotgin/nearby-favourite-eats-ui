@@ -31,7 +31,7 @@
 {#if isDemoMode()}
 	<div class="flex flex-row gap-4 place-items-center">
 		<div class="flex flex-row gap-2 place-items-center">
-			<div class="bg-yellow-500 text-white px-2 rounded-lg uppercase font-medium">Demo</div>
+			<div class="bg-yellow-500 text-white px-2 rounded-lg uppercase font-semibold">Demo</div>
 			<span>@jinnotgin</span>
 			<Avatar uid={`jin-DEMO-SEED-10`} size="2rem" />
 		</div>
