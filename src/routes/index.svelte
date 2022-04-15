@@ -293,7 +293,7 @@
 							}}>Show more venues</Button
 						>
 						{#if isDemoMode()}
-							<Button fullWidth on:click={() => location.replace('/')}
+							<Button fullWidth on:click={() => window.location.assign('/')}
 								>🚨 - Exit Demo Mode - 🚨</Button
 							>
 						{/if}
