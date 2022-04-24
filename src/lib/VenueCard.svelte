@@ -8,7 +8,7 @@
 
 	// TODO: Find another place to host the imgur image
 	const PLACEHOLDER_IMAGE_URL = 'https://i.imgur.com/nEkkYfis.png';
-	const OPEN_IN_NEW_TAB_ICON_URL = 'https://i.imgur.com/nEkkYfis.png';
+	const OPEN_IN_NEW_TAB_ICON_URL = 'https://i.imgur.com/00NQgEG.png';
 
 	export let venue = {};
 </script>
