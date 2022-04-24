@@ -32,7 +32,7 @@
 
 <style>
 	header {
-		@apply flex justify-between bg-gray-200 drop-shadow place-items-center text-gray-800 sticky top-0;
+		@apply flex justify-between bg-gray-200 drop-shadow place-items-center text-gray-800 sticky top-0 z-10;
 	}
 
 	.brand {

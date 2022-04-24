@@ -12,6 +12,6 @@
 
 <style>
 	section {
-		@apply sticky top-11 bg-white py-2 px-2 drop-shadow-md rounded-md flex items-center;
+		@apply sticky top-11 bg-white py-2 px-2 drop-shadow-md rounded-md flex items-center z-10;
 	}
 </style>
