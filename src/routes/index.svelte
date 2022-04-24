@@ -244,7 +244,7 @@
 						variant="secondary"
 						thin
 						on:click={() => {
-							window.location.assign('/?demo=true');
+							window.location.assign('/?demo');
 						}}
 						>Hmm, let me try it out first (Demo Mode)
 					</Button>

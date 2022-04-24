@@ -61,5 +61,5 @@ export const sortFuncs = {
 };
 
 export const isDemoMode = () => {
-	return browser ? location.href.includes('demo=true') : false;
+	return browser ? location.href.includes('?demo') : false;
 };
