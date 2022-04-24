@@ -36,7 +36,15 @@
 				{/each}
 			</div>
 			<p class="text-sm text-gray-600">
-				<a href={generateGoogleUrl(venue)} target="_blank">{venue.details}</a>
+				<a href={generateGoogleUrl(venue)} target="_blank"
+					>{venue.details}
+					<img
+						class="inline opacity-60"
+						src="https://i.imgur.com/00NQgEG.png"
+						alt="Open in new tab icon"
+						width="16"
+					/></a
+				>
 			</p>
 			<p class="text-sm text-gray-400 ml-auto">
 				{openingHoursToday(venue.openingHours)}
