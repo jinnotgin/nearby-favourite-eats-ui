@@ -52,6 +52,74 @@ export const openingHoursToday = (textStr) => {
 	if (!!!textStr.includes(dayNow)) return '';
 	return textStr.split(`${dayNow}:`)[1].split('\n')[0];
 };
+export const isOpenNow = (textStr = '') => {
+	const sgTimeStrToNumber = (timeStr) => {
+		if (!/[\d]{2}:[\d]{2}[ap]m/.test(timeStr)) {
+			console.error('sgTimeStrToUTCNumber: invalid input');
+			return 0;
+		}
+
+		const hour = parseInt(timeStr.substr(0, 2));
+		const minute = parseInt(timeStr.substr(3, 2));
+		const ampm = timeStr.substr(5, 2);
+
+		let hour24;
+		if (ampm === 'am' && hour === 12) hour24 = 0;
+		else if (ampm === 'pm' && hour < 12) hour24 = hour + 12;
+		else hour24 = hour;
+
+		const number = minute + hour24 * 60;
+		// console.log({ hour, minute, ampm, hour24, number });
+		return number;
+	};
+	const sgTimeStrToUTCNumber = (timeStr) => {
+		const utcNumber = sgTimeStrToNumber(timeStr) - 8 * 60;
+		// console.log({ utcNumber });
+		return utcNumber;
+	};
+
+	const timeRangeSplit = (_timeRange) => {
+		const timeRange = _timeRange.trim();
+
+		if (timeRange === 'Open 24 hours') return [`12:00am`, `11:59pm`];
+
+		const times = timeRange.split(' - ');
+		const startTime = times.length == 2 ? times[0] : `12:00am`;
+		const endTime = times.length == 2 ? times[1] : `12:00am`;
+
+		return [startTime, endTime];
+	};
+
+	const _isOpenNow = (timeRange) => {
+		const [startTimeStr, endTimeStr] = timeRangeSplit(timeRange);
+		const startUICNumber = sgTimeStrToUTCNumber(startTimeStr);
+		let endUTCNumber = sgTimeStrToUTCNumber(endTimeStr);
+
+		const now = new Date();
+		const currentUTCNumber = now.getUTCHours() * 60 + now.getUTCMinutes();
+
+		let isOpenNow = currentUTCNumber >= startUICNumber && currentUTCNumber <= endUTCNumber;
+		if (endUTCNumber <= startUICNumber && !isOpenNow) isOpenNow = currentUTCNumber <= endUTCNumber;
+		// console.log({ startUICNumber, endUTCNumber, currentUTCNumber, isOpenNow });
+		return isOpenNow;
+	};
+
+	const rawTimeRanges = textStr.split(',');
+	let timeRanges = [];
+	for (const rawTimeRange of rawTimeRanges) {
+		const [startTimeStr, endTimeStr] = timeRangeSplit(rawTimeRange);
+		const startNumber = sgTimeStrToNumber(startTimeStr);
+		let endNumber = sgTimeStrToNumber(endTimeStr);
+
+		if (endNumber < startNumber) {
+			timeRanges.push(`${startTimeStr} - 11:59pm`);
+			timeRanges.push(`12:00am - ${endTimeStr}`);
+		} else timeRanges.push(rawTimeRange);
+	}
+
+	const result = timeRanges.some(_isOpenNow);
+	return result;
+};
 
 // TODO: for the google url, consider adjusting the scraper to give the url param directly, rather than manipulating via frontend
 export const generateGoogleUrl = (venue) => {

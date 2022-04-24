@@ -2,6 +2,7 @@
 	import {
 		allowedCategories,
 		openingHoursToday,
+		isOpenNow,
 		generateGoogleUrl
 	} from '$lib/utils-dataProcessing';
 	export let venue = {};
@@ -48,6 +49,7 @@
 			</p>
 			<p class="text-sm text-gray-400 ml-auto">
 				{openingHoursToday(venue.openingHours)}
+				{!isOpenNow(openingHoursToday(venue.openingHours)) ? ' ⛔' : ''}
 			</p>
 		</div>
 	</div>
