@@ -5,6 +5,11 @@
 		isOpenNow,
 		generateGoogleUrl
 	} from '$lib/utils-dataProcessing';
+
+	// TODO: Find another place to host the imgur image
+	const PLACEHOLDER_IMAGE_URL = 'https://i.imgur.com/nEkkYfis.png';
+	const OPEN_IN_NEW_TAB_ICON_URL = 'https://i.imgur.com/nEkkYfis.png';
+
 	export let venue = {};
 </script>
 
@@ -14,14 +19,12 @@
 			<a href={venue.venueUrl} target="_blank"
 				><img
 					class="h-24 w-24 rounded-lg"
-					src={venue.featuredImages.length > 0
-						? venue.featuredImages[0]
-						: 'https://i.imgur.com/nEkkYfis.png'}
+					src={venue.featuredImages.length > 0 ? venue.featuredImages[0] : PLACEHOLDER_IMAGE_URL}
 					on:error={(event) => {
 						// TODO: Proper error handling for failed images
-						// also, make sure to host the imgur placeholder image somewhere else (it is being used across this file)
 						console.log('error loading image', event);
-						event.target.src = 'https://i.imgur.com/nEkkYfis.png';
+						if (event.target.currentSrc !== PLACEHOLDER_IMAGE_URL)
+							event.target.src = PLACEHOLDER_IMAGE_URL;
 					}}
 					alt={venue.name}
 					loading="lazy"
@@ -44,7 +47,7 @@
 					>{venue.details}
 					<img
 						class="inline opacity-60"
-						src="https://i.imgur.com/00NQgEG.png"
+						src={OPEN_IN_NEW_TAB_ICON_URL}
 						alt="Open in new tab icon"
 						width="16"
 					/></a
