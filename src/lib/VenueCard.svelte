@@ -2,12 +2,12 @@
 	import {
 		allowedCategories,
 		openingHoursToday,
-		isOpenNow,
+		isClosedNow,
 		generateGoogleUrl
 	} from '$lib/utils-dataProcessing';
 
 	// TODO: Find another place to host the imgur image
-	const PLACEHOLDER_IMAGE_URL = 'https://i.imgur.com/nEkkYfis.png';
+	const PLACEHOLDER_IMAGE_URL = 'https://i.imgur.com/nEkkYfil.png';
 	const OPEN_IN_NEW_TAB_ICON_URL = 'https://i.imgur.com/00NQgEG.png';
 
 	export let venue = {};
@@ -55,7 +55,7 @@
 			</p>
 			<p class="text-sm text-gray-400 ml-auto">
 				{openingHoursToday(venue.openingHours)}
-				{!isOpenNow(openingHoursToday(venue.openingHours)) ? ' ⛔' : ''}
+				{isClosedNow(openingHoursToday(venue.openingHours)) ? ' ⛔' : ''}
 			</p>
 		</div>
 	</div>

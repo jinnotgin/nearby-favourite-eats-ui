@@ -52,7 +52,10 @@ export const openingHoursToday = (textStr) => {
 	if (!!!textStr.includes(dayNow)) return '';
 	return textStr.split(`${dayNow}:`)[1].split('\n')[0];
 };
-export const isOpenNow = (textStr = '') => {
+export const isClosedNow = (_textStr = '') => {
+	const textStr = _textStr.trim();
+	if (textStr === '') return false;
+
 	const sgTimeStrToNumber = (timeStr) => {
 		if (!/[\d]{2}:[\d]{2}[ap]m/.test(timeStr)) {
 			console.error('sgTimeStrToUTCNumber: invalid input');
@@ -99,7 +102,8 @@ export const isOpenNow = (textStr = '') => {
 		const currentUTCNumber = now.getUTCHours() * 60 + now.getUTCMinutes();
 
 		let isOpenNow = currentUTCNumber >= startUICNumber && currentUTCNumber <= endUTCNumber;
-		// console.log({ startUICNumber, endUTCNumber, currentUTCNumber, isOpenNow });
+		console.log({ startUICNumber, endUTCNumber, currentUTCNumber, isOpenNow });
+
 		return isOpenNow;
 	};
 
@@ -116,8 +120,8 @@ export const isOpenNow = (textStr = '') => {
 		} else timeRanges.push(rawTimeRange);
 	}
 
-	const result = timeRanges.some(_isOpenNow);
-	return result;
+	const isItOpen = timeRanges.some(_isOpenNow);
+	return !isItOpen;
 };
 
 // TODO: for the google url, consider adjusting the scraper to give the url param directly, rather than manipulating via frontend
