@@ -13,7 +13,12 @@
 			<a href={venue.venueUrl} target="_blank"
 				><img
 					class="h-24 w-24 rounded-lg"
-					src={venue.featuredImages[0]}
+					src={venue.featuredImages.length > 0
+						? venue.featuredImages[0]
+						: 'https://i.imgur.com/nEkkYfis.png'}
+					on:error={(event) => {
+						console.log(event);
+					}}
 					alt={venue.name}
 					loading="lazy"
 				/></a
