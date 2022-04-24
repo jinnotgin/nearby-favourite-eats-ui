@@ -93,13 +93,12 @@ export const isOpenNow = (textStr = '') => {
 	const _isOpenNow = (timeRange) => {
 		const [startTimeStr, endTimeStr] = timeRangeSplit(timeRange);
 		const startUICNumber = sgTimeStrToUTCNumber(startTimeStr);
-		let endUTCNumber = sgTimeStrToUTCNumber(endTimeStr);
+		const endUTCNumber = sgTimeStrToUTCNumber(endTimeStr);
 
 		const now = new Date();
 		const currentUTCNumber = now.getUTCHours() * 60 + now.getUTCMinutes();
 
 		let isOpenNow = currentUTCNumber >= startUICNumber && currentUTCNumber <= endUTCNumber;
-		if (endUTCNumber <= startUICNumber && !isOpenNow) isOpenNow = currentUTCNumber <= endUTCNumber;
 		// console.log({ startUICNumber, endUTCNumber, currentUTCNumber, isOpenNow });
 		return isOpenNow;
 	};
