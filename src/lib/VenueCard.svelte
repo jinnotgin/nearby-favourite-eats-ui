@@ -18,7 +18,10 @@
 						? venue.featuredImages[0]
 						: 'https://i.imgur.com/nEkkYfis.png'}
 					on:error={(event) => {
-						console.log(event);
+						// TODO: Proper error handling for failed images
+						// also, make sure to host the imgur placeholder image somewhere else (it is being used across this file)
+						console.log('error loading image', event);
+						event.target.src = 'https://i.imgur.com/nEkkYfis.png';
 					}}
 					alt={venue.name}
 					loading="lazy"
