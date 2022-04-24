@@ -8,7 +8,7 @@
 
 <header>
 	<div>
-		<a sveltekit:prefetch href={isDemoMode() ? '/?demo=true' : '/'} on:click={scrollToTop}>
+		<a sveltekit:prefetch href={isDemoMode() ? '/?demo' : '/'} on:click={scrollToTop}>
 			<div class="brand">
 				<img src={logo} alt="FavEats" />
 				<span>FavEats</span>
