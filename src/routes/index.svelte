@@ -242,7 +242,6 @@
 				<div class="flex place-content-center flex-col gap-2">
 					<Button
 						variant="secondary"
-						thin
 						on:click={() => {
 							window.location.assign('/?demo');
 						}}
