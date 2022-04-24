@@ -237,9 +237,17 @@
 						<span class="font-semibold">Burpple account</span>
 						and gathering the places that are currently in your wishlist.
 					</div>
-					<div>Sounds interesting? Click on the button below to begin!</div>
+					<div>Sounds interesting? Click on the buttons below to begin!</div>
 				</IllustrativeMessage>
-				<div class="flex place-content-center">
+				<div class="flex place-content-center flex-col gap-2">
+					<Button
+						variant="secondary"
+						thin
+						on:click={() => {
+							window.location.assign('/?demo=true');
+						}}
+						>Hmm, let me try it out first (Demo Mode)
+					</Button>
 					<Auth />
 				</div>
 			{:else if !dbStore.known}

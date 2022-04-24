@@ -54,7 +54,7 @@
 		</div>
 	{:else}
 		<!-- <Button on:click={() => auth.signInWith('google')}>Sign In with Google</Button> -->
-		<Button on:click={() => auth.signInAnonymously()}>Let's Begin</Button>
+		<Button on:click={() => auth.signInAnonymously()}>Sign Up</Button>
 	{/if}
 {:else}
 	Loading...
